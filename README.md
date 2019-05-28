@@ -522,7 +522,7 @@ app.all('/admin/*',(req,res,next)=>{
 
 > 业务调用处：
 
-![p3](img\p3.png)
+![p3](/img/p3.png)
 
 ## 获取首页精品推荐课程数据
 
