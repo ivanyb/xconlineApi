@@ -581,9 +581,9 @@ message数组中对象参数说明，message数组最多为10条
 
 > 业务调用处：
 
-![p1](img\p1.png)
+![p1](/img/p1.png)
 
-![p6](img\p6.png)
+![p6](/img/p6.png)
 
 
 
@@ -699,7 +699,7 @@ message数组中对象参数说明，message数组最多为10条
 
 > 业务调用处：
 
-![p2](img\p2.png)
+![p2](/img/p2.png)
 
 
 
@@ -753,7 +753,7 @@ message数组中对象参数说明，message数组最多为10条
 
 > 业务调用处：
 
-![p4](img\p4.png)
+![p4]/img/\p4.png)
 
 # 课程列表页
 
@@ -846,7 +846,7 @@ message数组中对象参数说明，message数组最多为10条
 
 > 业务调用处：
 
-![p5](img\p5.png)
+![p5/img/g\p5.png)
 
 
 
@@ -928,7 +928,7 @@ message参数数组对象属性说明：
 
 > 业务调用处：
 
-![p7](img\p7.png)
+![p/img/mg\p7.png)
 
 # 课程详情页
 
@@ -998,9 +998,9 @@ message参数数组对象属性说明：
 | 参数名称               | 参数说明              |
 | ------------------ | ----------------- |
 | BreadCrumbs        | 课程详情页面中的面包屑导航数据   |
-| BreadCrumbs业务调用处：  | ![p8](img\p8.png) |
+| BreadCrumbs业务调用处：  | ![/img/img\p8.png) |
 | CourseDetial       | 课程详情，课程常见问题数据     |
-| CourseDetial业务调用处： | ![p9](img\p9.png) |
+| CourseDetial业务调用处： | !/img/(img\p9.png) |
 
 
 
@@ -1079,7 +1079,7 @@ message参数数组对象属性说明：
 | 参数名称    | 参数说明                             |
 | ------- | -------------------------------- |
 | status  | 0:正常 1：异常                        |
-| message | 当前课程大纲数组，调用处：![p10](img\p10.png) |
+| message | 当前课程大纲数组，调用处：!/img/](img\p10.png) |
 
 
 
@@ -1160,7 +1160,7 @@ message参数数组对象属性说明：
 
 >   业务调用：
 
-![p11](img\p11.png)
+/img/1](img\p11.png)
 
 
 
@@ -1248,8 +1248,7 @@ message参数数组对象属性说明：
 | pageSize      | 当前请求的单页容量，可以用来计算分页总数      |
 
 > 业务调用处：
-
-![p12](img\p12.png)
+/img/12](img\p12.png)
 
 ## 提交小节问题数据(需登录)
 
@@ -1291,8 +1290,7 @@ message参数数组对象属性说明：
 | message | 服务器处理信息       |
 
 > 业务调用处：视频播放页面下的问题列表中
-
-![p14](img\p14.png)
+/img/14](img\p14.png)
 
 
 
@@ -1337,8 +1335,7 @@ message参数数组对象属性说明：
 | message | 服务器处理信息       |
 
 > 业务调用处：点击视频播放页面下的问题列表数据中的回复按钮
-
-![p14](img\p14.png)
+/img/14](img\p14.png)
 
 
 
@@ -1404,8 +1401,7 @@ message参数数组对象属性说明：
 | pageSize      | 当前请求的单页容量,可以用来计算分页总数  |
 
 > 业务调用处：
-
-![p13](img\p13.png)
+/img/13](img\p13.png)
 
 ## 提交小节笔记数据(需登录)
 
@@ -1447,8 +1443,7 @@ message参数数组对象属性说明：
 | message | 服务器处理信息       |
 
 > 业务调用处：视频播放页面下的笔记列表中
-
-![p14](img\p14.png)
+/img/14](img\p14.png)
 
 
 
@@ -1500,8 +1495,7 @@ message参数数组对象属性说明：
 | message | 服务器处理信息       |
 
 > 业务调用处：点击加入购物车按钮
-
-![p15](img\p15.png)
+/img/15](img\p15.png)
 
 
 
@@ -1553,8 +1547,7 @@ message参数数组对象属性说明：
 | img_url     | 课程图片        |
 
 > 业务调用处：购物车列表
-
-![p16](img\p16.png)
+/img/16](img\p16.png)
 
 
 
@@ -1597,8 +1590,7 @@ message参数数组对象属性说明：
 | message | 服务器处理信息       |
 
 > 业务调用处：点击购物车列表中的删除按钮
-
-![p16](img\p16.png)
+/img/16](img\p16.png)
 
 
 
@@ -1650,16 +1642,13 @@ message参数数组对象属性说明：
 | remark   | 订单描述  |
 
 > 业务调用处：提交订单 按钮
-
-![p17](img\p17.png)
+/img/17](img\p17.png)
 
 > 确认订单
-
-![p18](img\p18.png)
+/img/18](img\p18.png)
 
 点击“确认支付”按钮后进入：
-
-![p19](img\p19.png)
+/img/19](img\p19.png)
 
 # 支付成功后更新订单(由支付平台调用，无需登录)
 
@@ -1800,8 +1789,7 @@ message.orderList.order_goods_list参数数组对象属性说明
 | img_url      | 课程图片                           |
 
 > 业务调用处：
-
-![p20](img\p20.png)
+/img/20](img\p20.png)
 
 ## 获取我的课程列表(需登录)
 
@@ -1888,8 +1876,7 @@ CourseList：所有课程对象数组
 | update_time       | 最新学习时间（用户点击小节播放的时候要调用api：/ch/mycenter/updateGoodsSection/课程小节id/课程小节名称更新） |
 
 > 业务调用处：
-
-![p21](img\p21.png)
+/img/21](img\p21.png)
 
 
 
@@ -1910,8 +1897,7 @@ CourseList：所有课程对象数组
 > 请求url： /ch/mycenter/updateGoodsSection
 
 > 接口作用：主要是为了个人中心我的课程中的（最近课程，观看百分比，当前进度章节数据更新）
-
-![p23](img\p23.png)
+/img/23](img\p23.png)
 
 ------
 
@@ -1946,5 +1932,4 @@ CourseList：所有课程对象数组
 | message | 服务器处理信息       |
 
 > 接口调用处：在点击章节播放视频的时候，同步调用此接口进行相关数据更新
-
-![p22](img\p22.png)
+/img/22](/img/p22.png)
