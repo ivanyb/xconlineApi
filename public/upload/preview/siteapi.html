@@ -1,0 +1,4806 @@
+<html>
+  <head>
+	  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>i5ting_ztree_toc:siteapi</title>
+		<link href="toc/style/github-bf51422f4bb36427d391e4b75a1daa083c2d840e.css" media="all" rel="stylesheet" type="text/css"/>
+		<link href="toc/style/github2-d731afd4f624c99a4b19ad69f3083cd6d02b81d5.css" media="all" rel="stylesheet" type="text/css"/>
+		<link href="toc/css/zTreeStyle/zTreeStyle.css" media="all" rel="stylesheet" type="text/css"/>
+	  <style>
+		pre {
+		    counter-reset: line-numbering;
+		    border: solid 1px #d9d9d9;
+		    border-radius: 0;
+		    background: #fff;
+		    padding: 0;
+		    line-height: 23px;
+		    margin-bottom: 30px;
+		    white-space: pre;
+		    overflow-x: auto;
+		    word-break: inherit;
+		    word-wrap: inherit;
+		}
+
+		pre a::before {
+		  content: counter(line-numbering);
+		  counter-increment: line-numbering;
+		  padding-right: 1em; /* space after numbers */
+		  width: 25px;
+		  text-align: right;
+		  opacity: 0.7;
+		  display: inline-block;
+		  color: #aaa;
+		  background: #eee;
+		  margin-right: 16px;
+		  padding: 2px 10px;
+		  font-size: 13px;
+		  -webkit-touch-callout: none;
+		  -webkit-user-select: none;
+		  -khtml-user-select: none;
+		  -moz-user-select: none;
+		  -ms-user-select: none;
+		  user-select: none;
+		}
+
+		pre a:first-of-type::before {
+		  padding-top: 10px;
+		}
+
+		pre a:last-of-type::before {
+		  padding-bottom: 10px;
+		}
+
+		pre a:only-of-type::before {
+		  padding: 10px;
+		}
+
+		.highlight { background-color: #ffffcc } /* RIGHT */
+		</style>
+  </head>
+  <body>
+	  <div>
+				<div style='width:25%;'>
+						<ul id="tree" class="ztree" style='width:100%'>
+
+						</ul>
+				</div>
+        <div id='readme' style='width:70%;margin-left:20%;'>
+          	<article class='markdown-body'>
+            	<h1 id="-">数据服务说明</h1>
+<pre><code>此文档提供了学成在线相关功能数据API调用说明
+
+Api域名为：http://157.122.54.189:9092/
+
+Api域名分为两类：  
+http://157.122.54.189:9092/nc/.....  以/nc/开头的不需要检查是否登录  
+http://157.122.54.189:9092/ch/.....  以/ch/开头的需要检查是否登录  
+</code></pre><h2 id="-">数据服务通用返回格式</h2>
+<blockquote>
+<p>数据服务中所有api返回的格式均为json格式，响应正确时具体格式如下：</p>
+</blockquote>
+<pre><code class="lang-json">  {
+    &quot;status&quot;: 0,
+    &quot;message&quot;:&quot;&quot;,
+    &quot;totalCount&quot;:0,
+    &quot;pageIndex&quot;:1,
+    &quot;pageSize&quot;:10
+  }
+</code></pre>
+<p>​     </p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>status</td>
+<td>数据服务的处理状态，有两个值：  1：表示服务器处理发生了异常 0：正常  2：未登录</td>
+</tr>
+<tr>
+<td>message</td>
+<td>当status=1时，message为数据服务抛出的异常信息  status=0时 为正常数据，status=2时表示未登录</td>
+</tr>
+<tr>
+<td>totalCount</td>
+<td>分页获取数据时的数据总条数</td>
+</tr>
+<tr>
+<td>pageIndex</td>
+<td>分页获取数据时的当前页码</td>
+</tr>
+<tr>
+<td>pageSize</td>
+<td>分页获取数据时的每页显示条数</td>
+</tr>
+</tbody>
+</table>
+<p>​                                         </p>
+<blockquote>
+<p>响应错误时，数据服务会返回错误码1和错误信息，例如：</p>
+</blockquote>
+<pre><code class="lang-json">{
+  &quot;status&quot;:1,
+  &quot;message&quot;:&quot;数据服务中的错误信息&quot;
+}
+</code></pre>
+<h2 id="-set-cookie-">关于set-cookie说明</h2>
+<blockquote>
+<p>客户端首次访问数据服务接口的时候，服务器会自动向客户端写入一个cookieid，写入的方式是在响应报文头中通过set-cookie来实现
+必须配合Node服务器中的：res.header(&quot;Access-Control-Allow-Credentials&quot;, &quot;true&quot;);来实现</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>作用：做session登录状态管理的实现机制</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>格式类似于：
+set-cookie:connect.sid=dvJ; Path=/; HttpOnly</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>set-cookie中的值说明</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>作用说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>set-cookie</td>
+<td>http响应报文头固定参数，作用是会将其后面的值写入到浏览器的cookie中</td>
+</tr>
+<tr>
+<td>connect.sid</td>
+<td>浏览器以connect.sid作为cookie的键存储好值，例如上面的：dvJ</td>
+</tr>
+<tr>
+<td>Path</td>
+<td>表示将来访问/下面的所有url时，都要将cookie的值通过请求报文头中的cookies传给数据服务</td>
+</tr>
+<tr>
+<td>HttpOnly</td>
+<td>表示只有在http下的请求才将cookie传给数据服务</td>
+</tr>
+</tbody>
+</table>
+<h2 id="-ajax-">数据服务解决ajax跨域问题</h2>
+<blockquote>
+<p>在数据服务的入口文件 app.js中做如下设置类解决管理后台ajax跨域访问问题</p>
+</blockquote>
+<pre><code class="lang-javascript">nodejs+express 写法：
+
+app.all(&#39;/admin/*&#39;,(req,res,next)=&gt;{
+    //设置允许跨域响应报文头
+    //设置跨域
+  //设置只有 http://127.0.0.1:5008 下发出的ajax请求才允许访问
+    res.header(&quot;Access-Control-Allow-Origin&quot;, &quot;http://127.0.0.1:5008&quot;);
+
+  // 设置允许的请求头
+    res.header(&quot;Access-Control-Allow-Headers&quot;, &quot;X-Requested-With, accept,OPTIONS, content-type&quot;);
+  // 设置允许的请求方式为所有，即 get,post,put,delete等请求方式均可
+    res.header(&quot;Access-Control-Allow-Methods&quot;,&quot;*&quot;);
+
+    /* 需要让ajax请求携带cookie ,Access-Control-Allow-Credentials要设置为true，
+  那么Access-Control-Allow-Origin不能设置为*，必须设置为请求者所在的域名
+   */
+    res.header(&quot;Access-Control-Allow-Credentials&quot;, &quot;true&quot;);
+
+  // 统一设置响应给请求者的格式为json格式
+    res.setHeader(&#39;Content-Type&#39;,&#39;application/json;charset=utf-8&#39;);
+
+    //  如果当前请求时OPTIONS 直接响应回去，不进入真正的业务逻辑方法，防止执行多次而产生
+  // 主要是解决axios发出post请求时，可能会额外发出OPTIONS请求，导致执行两次业务，比如
+  // 新增了两条数据到数据库里面造成业务紊乱
+    if(req.method!=&quot;OPTIONS&quot;){
+         next();
+  }else{
+     res.end(&#39;&#39;);
+  }
+});
+
+</code></pre>
+<h1 id="-">账号管理</h1>
+<h2 id="-">用户登录</h2>
+<blockquote>
+<p>开发者可以通过本接口实现用户的登录检查，本接口如果验证用户名和密码成功，则会在服务器端写个当前浏览器匹配的
+session，同时将cookieid以响应报文头的方式响应给浏览器</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>http请求方式：POST</p>
+</blockquote>
+<blockquote>
+<p>请求url：  /nc/common/account/login</p>
+</blockquote>
+<blockquote>
+<p><strong>此api不需要登录即可访问</strong></p>
+</blockquote>
+<hr>
+<blockquote>
+<p>请求报文体传参示例：</p>
+</blockquote>
+<p>教师端账号:18888888888</p>
+<p>学生端账号:19999999999</p>
+<p>密码均为：123456</p>
+<pre><code class="lang-json">{
+  &quot;user_name&quot;:&quot;18888888888&quot;,
+  &quot;password&quot;:&quot;123456&quot;
+}
+</code></pre>
+<hr>
+<blockquote>
+<p>请求参数说明：</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>参数名称</th>
+<th>参数说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>user_name</td>
+<td>登录用户名</td>
+</tr>
+<tr>
+<td>password</td>
+<td>登录密码</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<blockquote>
+<p>响应正确时的JSON返回结果：</p>
+</blockquote>
+<pre><code class="lang-json">{
+    &quot;status&quot;: 0,
+    &quot;message&quot;: {
+        &quot;text&quot;: &quot;登录成功&quot;,
+        &quot;user&quot;: {
+            &quot;uid&quot;: 4,
+            &quot;uname&quot;: &quot;88888&quot;,
+            &quot;role&quot;: 0,
+            &quot;nick_name&quot;: &quot;88888&quot;
+        }
+    }
+}
+</code></pre>
+<hr>
+<blockquote>
+<p>响应错误时，数据服务会返回错误码1和错误信息，例如：</p>
+</blockquote>
+<pre><code class="lang-json">{
+  &quot;status&quot;:1,
+  &quot;message&quot;:&quot;用户名或者密码错误&quot;
+}
+
+</code></pre>
+<h2 id="-">用户退出</h2>
+<blockquote>
+<p>开发者可以通过本接口实现用户的退出登录</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>http请求方式：GET</p>
+</blockquote>
+<blockquote>
+<p>请求url：  /nc/common/account/logout</p>
+<p><strong>此api不需要登录即可访问</strong></p>
+</blockquote>
+<hr>
+<blockquote>
+<p>响应正确时的JSON返回结果：</p>
+</blockquote>
+<pre><code class="lang-json">{
+  &quot;status&quot;:0,
+  &quot;message&quot;:&quot;用户已注销&quot;
+}
+
+</code></pre>
+<hr>
+<blockquote>
+<p>响应错误时，数据服务会返回错误码1和错误信息，例如：</p>
+</blockquote>
+<pre><code class="lang-json">{
+  &quot;status&quot;:1,
+  &quot;message&quot;:&quot;服务器异常信息&quot;
+}
+
+</code></pre>
+<hr>
+<h2 id="-">检查是否有登录</h2>
+<blockquote>
+<p>开发者可以通过本接口实现检查系统是否有登录，根据登录状态来做相应处理</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>http请求方式：Get</p>
+</blockquote>
+<blockquote>
+<p>请求url：  /nc/common/account/islogin</p>
+<p><strong>此api不需要登录即可访问</strong></p>
+</blockquote>
+<hr>
+<blockquote>
+<p>请求参数：无</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>响应的JSON返回结果：</p>
+</blockquote>
+<pre><code class="lang-json">{
+    &quot;status&quot;: 0,
+    &quot;message&quot;: &quot;用户已登录&quot;
+}
+
+{
+    &quot;status&quot;: 2,
+    &quot;message&quot;: &quot;用户未登录&quot;
+}
+
+</code></pre>
+<blockquote>
+<p>响应参数说明</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>参数名称</th>
+<th>参数说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>status</td>
+<td>表示当前登录状态 0: 已登录，2:未登录</td>
+</tr>
+</tbody>
+</table>
+<h2 id="-">用户注册</h2>
+<blockquote>
+<p>开发者可以通过本接口实现用户注册</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>http请求方式：POST</p>
+</blockquote>
+<blockquote>
+<p>请求url：  /nc/common/account/register</p>
+<p><strong>此api不需要登录即可访问</strong></p>
+</blockquote>
+<hr>
+<blockquote>
+<p>请求报文体传参示例：</p>
+</blockquote>
+<pre><code class="lang-json">{
+  &quot;user_name&quot;:&quot;13898765432&quot;,
+  &quot;password&quot;:&quot;123&quot;,    .
+  &quot;sns_code&quot;:&quot;88888&quot;,
+  &quot;role&quot;:&quot;1&quot;
+}
+</code></pre>
+<hr>
+<blockquote>
+<p>请求参数说明：</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>参数名称</th>
+<th>参数说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>user_name</td>
+<td>用户手机号</td>
+</tr>
+<tr>
+<td>password</td>
+<td>密码</td>
+</tr>
+<tr>
+<td>sns_code</td>
+<td>短信验证码</td>
+</tr>
+<tr>
+<td>role</td>
+<td>用户类型，0：普通用户  1：教师</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<blockquote>
+<p>响应正确时的JSON返回结果：</p>
+</blockquote>
+<pre><code class="lang-json">{
+    &quot;status&quot;: 0,
+    &quot;message&quot;: {
+        &quot;text&quot;: &quot;用户注册成功&quot;
+    }
+}
+</code></pre>
+<hr>
+<blockquote>
+<p>响应错误时，数据服务会返回错误码1和错误信息，例如：</p>
+</blockquote>
+<pre><code class="lang-json">{
+  &quot;status&quot;:1,
+  &quot;message&quot;:&quot;数据服务异常信息&quot;
+}
+</code></pre>
+<hr>
+<h2 id="-">检查用户名是否已注册</h2>
+<blockquote>
+<p>开发者可以通过本接口实现检查用户名是否存在，通常用在注册页面中</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>http请求方式：POST</p>
+</blockquote>
+<blockquote>
+<p>请求url： /nc/common/account/checkuser</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>请求参数：</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>参数名</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>username</td>
+<td>要检查的用户名</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<blockquote>
+<p>响应正确的JSON：</p>
+</blockquote>
+<pre><code class="lang-json">方式1：
+{
+    &quot;status&quot;: 0,
+    &quot;message&quot;: {
+        &quot;text&quot;: &quot;用户名已经注册，请更换一个&quot;,
+          &quot;isRegister&quot;:true      
+    }
+}
+
+方式2：
+{
+    &quot;status&quot;: 0,
+    &quot;message&quot;: {
+        &quot;text&quot;: &quot;用户名可用&quot;,
+          &quot;isRegister&quot;:false      
+    }
+}
+</code></pre>
+<blockquote>
+<p>响应错误时，数据服务会返回错误码1和错误信息，例如：</p>
+</blockquote>
+<pre><code class="lang-json">{
+  &quot;status&quot;:1,
+  &quot;message&quot;:&quot;数据服务异常信息&quot;
+}
+</code></pre>
+<h2 id="-">手机短信验证码</h2>
+<blockquote>
+<p>开发者可以通过本接口实现给指定手机号码发送短信验证码</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>http请求方式：POST</p>
+</blockquote>
+<blockquote>
+<p>请求url： /nc/common/account/snscode</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>请求参数：</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>参数名</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>username</td>
+<td>接收验证码的手机号码</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<blockquote>
+<p>响应正确的JSON：</p>
+</blockquote>
+<pre><code class="lang-json">{
+    &quot;status&quot;: 0,
+    &quot;message&quot;: {
+        &quot;reason&quot;: &quot;操作成功&quot;,
+        &quot;result&quot;: {
+            &quot;sid&quot;: &quot;c91b55beea8f4b78837d2f9a93d090db&quot;,
+            &quot;fee&quot;: 1,
+            &quot;count&quot;: 1
+        },
+        &quot;error_code&quot;: 0
+    }
+}
+
+或者
+{
+    &quot;status&quot;: 0,
+    &quot;message&quot;: {
+        &quot;reason&quot;: &quot;短信验证码发送过频繁&quot;,
+        &quot;result&quot;: [],
+        &quot;error_code&quot;: 205404
+    }
+}
+</code></pre>
+<blockquote>
+<p>响应错误时，数据服务会返回错误码1和错误信息，例如：</p>
+</blockquote>
+<pre><code class="lang-json">{
+  &quot;status&quot;:1,
+  &quot;message&quot;:&quot;数据服务异常信息&quot;
+}
+</code></pre>
+<h1 id="-">首页</h1>
+<h2 id="-">获取首页顶部 轮播图，分类导航数据</h2>
+<blockquote>
+<p>http请求方式：GET</p>
+</blockquote>
+<blockquote>
+<p>请求url：  /nc/course/home/gettopdata</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>请求示例：<a href="http://157.122.54.189:9092/nc/course/home/gettopdata">http://157.122.54.189:9092/nc/course/home/gettopdata</a></p>
+</blockquote>
+<hr>
+<blockquote>
+<p>请求参数：无</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>响应正确时的JSON返回结果：</p>
+</blockquote>
+<pre><code class="lang-json">{
+    &quot;status&quot;: 0,
+    &quot;message&quot;: {
+        &quot;catelist&quot;: [
+            {
+                &quot;id&quot;: 40,
+                &quot;pid&quot;: 0,
+                &quot;class_layer&quot;: 1,
+                &quot;title&quot;: &quot;前端与移动开发&quot;,
+                &quot;subcates&quot;: [
+                    {
+                        &quot;id&quot;: 43,
+                        &quot;pid&quot;: 40,
+                        &quot;class_layer&quot;: 2,
+                        &quot;title&quot;: &quot;免费课&quot;,
+                        &quot;subcates&quot;: [
+                            {
+                                &quot;id&quot;: 52,
+                                &quot;pid&quot;: 43,
+                                &quot;class_layer&quot;: 3,
+                                &quot;title&quot;: &quot;javascript&quot;,
+                                &quot;subcates&quot;: []
+                            }
+                        ]
+                    },
+                    {
+                        &quot;id&quot;: 44,
+                        &quot;pid&quot;: 40,
+                        &quot;class_layer&quot;: 2,
+                        &quot;title&quot;: &quot;提升课&quot;,
+                        &quot;subcates&quot;: [
+                            {
+                                &quot;id&quot;: 59,
+                                &quot;pid&quot;: 44,
+                                &quot;class_layer&quot;: 3,
+                                &quot;title&quot;: &quot;小程序&quot;,
+                                 &quot;subcates&quot;: []
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        &quot;sliderlist&quot;: [
+            {
+                &quot;id&quot;: 113,
+                &quot;title&quot;: &quot;6节课掌握Python爬虫&quot;,
+                &quot;img_url&quot;: &quot;http://157.122.54.189:9092/upload/201809/19/201809191145158376.jpg&quot;
+            }            
+        ]
+    }
+}
+</code></pre>
+<blockquote>
+<p>响应参数说明</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>参数名称</th>
+<th>参数说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>catelist</td>
+<td>当前频道中的一级分类数据数组</td>
+</tr>
+<tr>
+<td>sliderlist</td>
+<td>轮播图数组</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<blockquote>
+<p>分类数组(catelist)对象参数值说明：</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>参数名</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>id</td>
+<td>分类数据id</td>
+</tr>
+<tr>
+<td>pid</td>
+<td>父分类id ,1级分类的pid为0</td>
+</tr>
+<tr>
+<td>class_layer</td>
+<td>分类的级别数字</td>
+</tr>
+<tr>
+<td>title</td>
+<td>分类名称</td>
+</tr>
+<tr>
+<td>subcates</td>
+<td>分类下的子级分类</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>当前频道轮播图数组(sliderlist)中的对象参数值说明：</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>参数名</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>id</td>
+<td>数据id</td>
+</tr>
+<tr>
+<td>title</td>
+<td>标题</td>
+</tr>
+<tr>
+<td>img_url</td>
+<td>封面配图完整url</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>业务调用处：</p>
+</blockquote>
+<p><img src="img\p3.png" alt="p3"></p>
+<h2 id="-">获取首页精品推荐课程数据</h2>
+<blockquote>
+<p>http请求方式：GET</p>
+</blockquote>
+<blockquote>
+<p>请求url：  /nc/course/home/getTopCourseList</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>请求示例：<a href="http://157.122.54.189:9092/nc/course/home/getTopCourseList">http://157.122.54.189:9092/nc/course/home/getTopCourseList</a></p>
+</blockquote>
+<hr>
+<blockquote>
+<p>请求参数：无</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>响应正确时的JSON返回结果：</p>
+</blockquote>
+<pre><code class="lang-json">{
+    &quot;status&quot;: 0,
+    &quot;message&quot;: [
+        {
+            &quot;category_id_top&quot;: 40,
+            &quot;category_id&quot;: 56,
+            &quot;id&quot;: 102,
+            &quot;title&quot;: &quot;【前端】Vue实现移动商城购物网站项目&quot;,
+              &quot;sub_title&quot;:&quot;Vue+Vuex+vue-resource+webpack技术栈,采取完全前后端分离模式开发&quot;,
+            &quot;is_hot&quot;: 1,
+            &quot;img_url&quot;: &quot;http://157.122.54.189:9092/upload/201809/17/201809171437171126.jpg&quot;,
+            &quot;lesson_level&quot;: &quot;初级&quot;,
+            &quot;click&quot;: 1209
+        }
+    ]
+}
+</code></pre>
+<blockquote>
+<p>响应参数说明</p>
+</blockquote>
+<p>message数组中对象参数说明，message数组最多为10条</p>
+<table>
+<thead>
+<tr>
+<th>参数名称</th>
+<th>参数说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>category_id_top</td>
+<td>课程所属一级分类</td>
+</tr>
+<tr>
+<td>category_id</td>
+<td>课程所属分类</td>
+</tr>
+<tr>
+<td>id</td>
+<td>课程id</td>
+</tr>
+<tr>
+<td>title</td>
+<td>课程名称</td>
+</tr>
+<tr>
+<td>is_hot</td>
+<td>是否热门课程，1：热门 0：热门</td>
+</tr>
+<tr>
+<td>img_url</td>
+<td>课程图片</td>
+</tr>
+<tr>
+<td>lesson_level</td>
+<td>课程等级,固定：1:热门  2：初级  3：中级 4：高级</td>
+</tr>
+<tr>
+<td>click</td>
+<td>学习人数</td>
+</tr>
+<tr>
+<td>sub_title</td>
+<td>课程简介</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<blockquote>
+<p>业务调用处：</p>
+</blockquote>
+<p><img src="img\p1.png" alt="p1"></p>
+<p><img src="img\p6.png" alt="p6"></p>
+<h2 id="-">获取首页分类课程数据</h2>
+<blockquote>
+<p>http请求方式：GET</p>
+</blockquote>
+<blockquote>
+<p>请求url：  /nc/course/home/getcourselist</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>请求示例：<a href="http://157.122.54.189:9092/nc/course/home/getcourselist">http://157.122.54.189:9092/nc/course/home/getcourselist</a></p>
+</blockquote>
+<hr>
+<blockquote>
+<p>请求参数：无</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>响应正确时的JSON返回结果：</p>
+</blockquote>
+<pre><code class="lang-json">{
+    &quot;status&quot;: 0,
+    &quot;message&quot;: {
+        &quot;types&quot;: [
+            {
+                &quot;tid&quot;: 1,
+                &quot;title&quot;: &quot;热门&quot;
+            },
+            {
+                &quot;tid&quot;: 2,
+                &quot;title&quot;: &quot;初级&quot;
+            },
+            {
+                &quot;tid&quot;: 3,
+                &quot;title&quot;: &quot;中级&quot;
+            },
+            {
+                &quot;tid&quot;: 4,
+                &quot;title&quot;: &quot;高级&quot;
+            }
+        ],
+        &quot;datas&quot;: [
+            {
+                &quot;id&quot;: 40,
+                &quot;title&quot;: &quot;前端与移动开发&quot;,
+                &quot;img_url&quot;: &quot;/upload/qd.png&quot;,
+                &quot;img1_url&quot;: &quot;/upload/python.png&quot;,
+                &quot;courseList&quot;: [
+                    {
+                        &quot;category_id_top&quot;: 40,
+                        &quot;id&quot;: 102,
+                        &quot;title&quot;: &quot;【前端】Vue实现移动商城购物网站项目&quot;,
+                        &quot;img_url&quot;: &quot;http://157.122.54.189:9092/upload/201809/17/201809171437171126.jpg&quot;,
+                        &quot;lesson_level&quot;: &quot;初级&quot;,
+                        &quot;click&quot;: 12
+                    }
+                ]
+            },
+            {
+                &quot;id&quot;: 41,
+                &quot;title&quot;: &quot;Java&quot;,
+                &quot;img_url&quot;: &quot;/upload/com.png&quot;,
+                &quot;img1_url&quot;: &quot;/upload/python1.png&quot;,
+                &quot;courseList&quot;: [
+                    {
+                        &quot;category_id_top&quot;: 41,
+                        &quot;id&quot;: 106,
+                        &quot;title&quot;: &quot;【Java基础】Java入门课程&quot;,
+                        &quot;img_url&quot;: &quot;http://157.122.54.189:9092/upload/201809/19/201809191125205879.jpg&quot;,
+                        &quot;lesson_level&quot;: &quot;初级&quot;,
+                        &quot;click&quot;: 4
+                    }
+                ]
+            }
+        ]
+    }
+}
+</code></pre>
+<blockquote>
+<p>响应参数说明</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>参数名称</th>
+<th>参数说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>types</td>
+<td>课程首页中的课程类型数据，固定：1:热门  2：初级  3：中级 4：高级</td>
+</tr>
+<tr>
+<td>datas</td>
+<td>课程种类和该种类下的课程数据</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<blockquote>
+<p>(datas)中的对象参数值说明：</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>参数名</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>id</td>
+<td>分类id</td>
+</tr>
+<tr>
+<td>title</td>
+<td>分类名称</td>
+</tr>
+<tr>
+<td>img_url</td>
+<td>分类左边图片</td>
+</tr>
+<tr>
+<td>img1_url</td>
+<td>分类课程上方banner图片</td>
+</tr>
+<tr>
+<td>courseList</td>
+<td>该分类下的课程数据数组（默认是热门数据，最多5条）</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>(courseList)中的对象参数值说明：</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>参数名</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>category_id_top</td>
+<td>所属顶级分类id</td>
+</tr>
+<tr>
+<td>id</td>
+<td>课程数据id</td>
+</tr>
+<tr>
+<td>title</td>
+<td>课程名称</td>
+</tr>
+<tr>
+<td>img_url</td>
+<td>课程图片</td>
+</tr>
+<tr>
+<td>lesson_level</td>
+<td>课程分类文字说明</td>
+</tr>
+<tr>
+<td>click</td>
+<td>学习人数</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>业务调用处：</p>
+</blockquote>
+<p><img src="img\p2.png" alt="p2"></p>
+<h2 id="-">获取首页热门、初、中、高级分类课程</h2>
+<blockquote>
+<p>http请求方式：GET</p>
+</blockquote>
+<blockquote>
+<p>请求url：  /nc/course/home/getcourselistByType/参数1/参数2</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>请求示例：<a href="http://157.122.54.189:9092/nc/course/home/getcourselistByType/41/1">http://157.122.54.189:9092/nc/course/home/getcourselistByType/41/1</a></p>
+</blockquote>
+<hr>
+<blockquote>
+<p>请求参数：</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>参数名称</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>参数1</td>
+<td>一级分类id</td>
+</tr>
+<tr>
+<td>参数2</td>
+<td>一级分类下的 1：热门 2：初级  3：中级 4：高级这些类型的课程 数据，根据需求传入对应的1,2,3,4其中之一的值</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<blockquote>
+<p>响应正确时的JSON返回结果：</p>
+</blockquote>
+<pre><code class="lang-json">{
+    &quot;status&quot;: 0,
+    &quot;message&quot;: [
+        {
+            &quot;category_id_top&quot;: 41,
+            &quot;category_id&quot;: 66,
+            &quot;id&quot;: 109,
+            &quot;title&quot;: &quot;【Java】职业规划公开课&quot;,
+            &quot;is_hot&quot;: 1,
+            &quot;img_url&quot;: &quot;http://157.122.54.189:9092/upload/201809/19/201809191135273079.jpg&quot;,
+            &quot;lesson_level&quot;: &quot;初级&quot;,
+            &quot;click&quot;: 2342
+        }
+    ]
+}
+</code></pre>
+<blockquote>
+<p>响应参数说明</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>参数名称</th>
+<th>参数说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>status</td>
+<td>0:正常 1：异常</td>
+</tr>
+<tr>
+<td>message</td>
+<td>课程数据数组，限制最多为5条数据</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>业务调用处：</p>
+</blockquote>
+<p><img src="img\p4.png" alt="p4"></p>
+<h1 id="-">课程列表页</h1>
+<h2 id="-">获取列表页上分类数据</h2>
+<blockquote>
+<p>http请求方式：GET</p>
+</blockquote>
+<blockquote>
+<p>请求url： /nc/course/courseList/getCateList</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>请求示例：<a href="http://157.122.54.189:9092/nc/course/courseList/getCateList">http://157.122.54.189:9092/nc/course/courseList/getCateList</a></p>
+</blockquote>
+<hr>
+<blockquote>
+<p>请求参数：无</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>响应正确时的JSON返回结果：</p>
+</blockquote>
+<pre><code class="lang-json">{
+    &quot;status&quot;: 0,
+    &quot;message&quot;: {
+        &quot;cate_Top_List&quot;: [
+           {
+                &quot;id&quot;: -1,
+                &quot;title&quot;: &quot;全部&quot;,
+                &quot;parent_id&quot;: -1,
+                &quot;class_layer&quot;: -1
+            },
+            {
+                &quot;id&quot;: 40,
+                &quot;title&quot;: &quot;前端与移动开发&quot;,
+                &quot;parent_id&quot;: 0,
+                &quot;class_layer&quot;: 1
+            }
+        ],
+        &quot;cate_Other_List&quot;: [
+          {
+                &quot;id&quot;: -1,
+                &quot;title&quot;: &quot;全部&quot;,
+                &quot;parent_id&quot;: -1,
+                &quot;class_layer&quot;: -1
+            },
+            {
+                &quot;id&quot;: 52,
+                &quot;title&quot;: &quot;javascript&quot;,
+                &quot;parent_id&quot;: 43,
+                &quot;class_layer&quot;: 3
+            }
+        ],
+        &quot;course_types&quot;: [
+              {
+                &quot;tid&quot;: -1,
+                &quot;title&quot;: &quot;全部&quot;
+            },
+            {
+                &quot;tid&quot;: 1,
+                &quot;title&quot;: &quot;热门&quot;
+            },
+            {
+                &quot;tid&quot;: 2,
+                &quot;title&quot;: &quot;初级&quot;
+            },
+            {
+                &quot;tid&quot;: 3,
+                &quot;title&quot;: &quot;中级&quot;
+            },
+            {
+                &quot;tid&quot;: 4,
+                &quot;title&quot;: &quot;高级&quot;
+            }
+        ]
+    }
+}
+</code></pre>
+<blockquote>
+<p>响应参数说明</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>参数名称</th>
+<th>参数说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>status</td>
+<td>0:正常 1：异常</td>
+</tr>
+<tr>
+<td>cate_Top_List</td>
+<td>一级分类数据</td>
+</tr>
+<tr>
+<td>cate_Other_List</td>
+<td>一级分类下的其他分类数据</td>
+</tr>
+<tr>
+<td>course_types</td>
+<td>难度等级</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>业务调用处：</p>
+</blockquote>
+<p><img src="img\p5.png" alt="p5"></p>
+<h2 id="-">根据分类分页获取课程数据</h2>
+<blockquote>
+<p>http请求方式：GET</p>
+</blockquote>
+<blockquote>
+<p>请求url： /nc/course/courseList/getCourseList?cate_top_id=一级分类id&amp;cate_id=2,3...级分类id&amp;type=课程标签id&amp;pageIndex=页码&amp;pageSize=单页容量</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>请求示例：<a href="http://157.122.54.189:9092/nc/course/courseList/getCourseList?cate_top_id=-1&amp;cate_id=-1&amp;type=-1&amp;pageIndex=1&amp;pageSize=28">http://157.122.54.189:9092/nc/course/courseList/getCourseList?cate_top_id=-1&amp;cate_id=-1&amp;type=-1&amp;pageIndex=1&amp;pageSize=28</a></p>
+</blockquote>
+<hr>
+<blockquote>
+<p>请求参数：</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>参数名称</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>cate_top_id</td>
+<td>一级分类id</td>
+</tr>
+<tr>
+<td>cate_id</td>
+<td>2,3...级分类id</td>
+</tr>
+<tr>
+<td>type</td>
+<td>课程标签id，1：热门 2：初级 3：中级 4：高级</td>
+</tr>
+<tr>
+<td>pageIndex</td>
+<td>页码，最小值为1</td>
+</tr>
+<tr>
+<td>pageSize</td>
+<td>单页容量，默认是10</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<blockquote>
+<p>响应正确时的JSON返回结果：</p>
+</blockquote>
+<pre><code class="lang-json">{
+    &quot;status&quot;: 0,
+    &quot;message&quot;: [
+        {
+            &quot;category_id_top&quot;: 40,
+            &quot;category_id&quot;: 59,
+            &quot;id&quot;: 103,
+            &quot;title&quot;: &quot;【前端】快应用实战开发 - 快速上手&quot;,
+            &quot;is_hot&quot;: 1,
+            &quot;img_url&quot;: &quot;http://157.122.54.189:9092/upload/201809/19/201809191054524297.jpg&quot;,
+            &quot;lesson_level&quot;: &quot;中级&quot;,
+            &quot;click&quot;: 4589,
+            &quot;sub_title&quot;: &quot;&quot;
+        }
+    ],
+    &quot;totalCount&quot;: 1,
+    &quot;pageIndex&quot;: 1,
+    &quot;pageSize&quot;: 5
+}
+</code></pre>
+<blockquote>
+<p>响应参数说明</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>参数名称</th>
+<th>参数说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>status</td>
+<td>0:正常 1：异常</td>
+</tr>
+<tr>
+<td>message</td>
+<td>符合条件的单页课程数据数组对象，对象属性说明，请参考下面表格</td>
+</tr>
+<tr>
+<td>totalCount</td>
+<td>符合条件的课程总数量</td>
+</tr>
+<tr>
+<td>pageIndex</td>
+<td>当前请求的页码</td>
+</tr>
+<tr>
+<td>pageSize</td>
+<td>当前请求的单页容量</td>
+</tr>
+</tbody>
+</table>
+<p>message参数数组对象属性说明：</p>
+<table>
+<thead>
+<tr>
+<th>参数名称</th>
+<th>参数说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>category_id_top</td>
+<td>课程所属一级分类id</td>
+</tr>
+<tr>
+<td>category_id</td>
+<td>课程所属分类id</td>
+</tr>
+<tr>
+<td>id</td>
+<td>课程id</td>
+</tr>
+<tr>
+<td>title</td>
+<td>课程标题</td>
+</tr>
+<tr>
+<td>is_hot</td>
+<td>1：热门课程 0：非热门课程</td>
+</tr>
+<tr>
+<td>img_url</td>
+<td>课程图片</td>
+</tr>
+<tr>
+<td>lesson_level</td>
+<td>课程难度等级文字，初级，中级，高级</td>
+</tr>
+<tr>
+<td>click</td>
+<td>学习人数</td>
+</tr>
+<tr>
+<td>sub_title</td>
+<td>课程说明</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>业务调用处：</p>
+</blockquote>
+<p><img src="img\p7.png" alt="p7"></p>
+<h1 id="-">课程详情页</h1>
+<h2 id="-id-">根据课程ID获取课程详情数据</h2>
+<blockquote>
+<p>http请求方式：GET</p>
+</blockquote>
+<blockquote>
+<p>请求url： /nc/course/courseDetial/getCourseDetial/参数1</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>请求示例：<a href="http://157.122.54.189:9092/nc/course/courseDetial/getCourseDetial/102">http://157.122.54.189:9092/nc/course/courseDetial/getCourseDetial/102</a></p>
+</blockquote>
+<hr>
+<blockquote>
+<p>请求参数：</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>参数名称</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>参数1</td>
+<td>课程id值</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<blockquote>
+<p>响应正确时的JSON返回结果：</p>
+</blockquote>
+<pre><code class="lang-json">{
+    &quot;status&quot;: 0,
+    &quot;message&quot;: {
+        &quot;BreadCrumbs&quot;: [
+            {
+                &quot;id&quot;: 40,
+                &quot;title&quot;: &quot;前端与移动开发&quot;
+            },
+            {
+                &quot;id&quot;: 44,
+                &quot;title&quot;: &quot;提升课&quot;
+            },
+            {
+                &quot;id&quot;: 59,
+                &quot;title&quot;: &quot;小程序&quot;
+            }
+        ],
+        &quot;CourseDetial&quot;: {
+            &quot;id&quot;:102,
+            &quot;title&quot;: &quot;【前端】Vue实现移动商城购物网站项目&quot;,
+            &quot;sub_title&quot;: &quot;Vue+Vuex+vue-resource+webpack技术栈&quot;,
+            &quot;sell_price&quot;: 399,
+            &quot;market_price&quot;: 899,
+            &quot;lesson_level&quot;: &quot;初级&quot;,
+            &quot;lesson_time&quot;: 0,
+            &quot;click&quot;: 1209,
+            &quot;lesson_star&quot;: 5,
+            &quot;leson_type&quot;: &quot;录播模式&quot;,
+            &quot;content&quot;: &quot;&lt;p&gt;&lt;img src=\&quot;http://157.122.54.189:9092/upload/201809/17/201809171445581503.png\&quot; title=\&quot;vuedesc.png\&quot; alt=\&quot;vuedesc.png\&quot; width=\&quot;820\&quot; height=\&quot;4949\&quot;/&gt;&lt;/p&gt;&quot;,
+            &quot;common_question&quot;: &quot;&lt;p&gt;&lt;span style=\&quot;color: rgb(0, 112, 192);\&quot;&gt;&lt;strong&gt;1、Vue 是什么？&lt;/strong&gt;&quot;,
+            &quot;teacher_img&quot;: &quot;http://157.122.54.189:9092/upload/teacherimg.jpg&quot;,
+            &quot;teacher_name&quot;: &quot;黑马高级讲师&quot;,
+            &quot;teacher_desc&quot;: &quot;计算机硕士，专注于IT编程领域20年，猎涉多门编程语言，参与多个国家级计算机项目，多年培训经验，丰富的教学讲解经验&quot;
+        }
+    }
+}
+</code></pre>
+<blockquote>
+<p>响应参数说明</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>参数名称</th>
+<th>参数说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BreadCrumbs</td>
+<td>课程详情页面中的面包屑导航数据</td>
+</tr>
+<tr>
+<td>BreadCrumbs业务调用处：</td>
+<td><img src="img\p8.png" alt="p8"></td>
+</tr>
+<tr>
+<td>CourseDetial</td>
+<td>课程详情，课程常见问题数据</td>
+</tr>
+<tr>
+<td>CourseDetial业务调用处：</td>
+<td><img src="img\p9.png" alt="p9"></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>CourseDetial对象说明</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>参数名称</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>id</td>
+<td>课程id</td>
+</tr>
+<tr>
+<td>title</td>
+<td>课程名称</td>
+</tr>
+<tr>
+<td>sub_title</td>
+<td>课程简要描述</td>
+</tr>
+<tr>
+<td>sell_price</td>
+<td>销售价格</td>
+</tr>
+<tr>
+<td>market_price</td>
+<td>市场价格</td>
+</tr>
+<tr>
+<td>lesson_level</td>
+<td>课程难度等级</td>
+</tr>
+<tr>
+<td>lesson_time</td>
+<td>课程视频时长，单位：分钟</td>
+</tr>
+<tr>
+<td>lesson_star</td>
+<td>课程评分，1-5分</td>
+</tr>
+<tr>
+<td>leson_type</td>
+<td>课程授课模式</td>
+</tr>
+<tr>
+<td>click</td>
+<td>该课程学习人数</td>
+</tr>
+<tr>
+<td>content</td>
+<td>课程详细介绍（富文本字符串）</td>
+</tr>
+<tr>
+<td>common_question</td>
+<td>课程常见问题（富文本字符串）</td>
+</tr>
+<tr>
+<td>teacher_img</td>
+<td>课程讲解老师头像</td>
+</tr>
+<tr>
+<td>teacher_name</td>
+<td>课程讲解老师名称</td>
+</tr>
+<tr>
+<td>teacher_desc</td>
+<td>课程讲解老师介绍</td>
+</tr>
+</tbody>
+</table>
+<h2 id="-id-">根据课程ID获取课程大纲数据</h2>
+<blockquote>
+<p>http请求方式：GET</p>
+</blockquote>
+<blockquote>
+<p>请求url： /nc/course/courseDetial/getOutline/参数1</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>请求示例：<a href="http://157.122.54.189:9092/nc/course/courseDetial/getOutline/102">http://157.122.54.189:9092/nc/course/courseDetial/getOutline/102</a></p>
+</blockquote>
+<hr>
+<blockquote>
+<p>请求参数：</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>参数名称</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>参数1</td>
+<td>传入课程课程id</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<blockquote>
+<p>响应正确时的JSON返回结果：</p>
+</blockquote>
+<pre><code class="lang-json">{
+    &quot;status&quot;: 0,
+    &quot;message&quot;: [
+        {
+            &quot;id&quot;: 2,
+            &quot;goods_id&quot;: 102,
+            &quot;parent_id&quot;: 0,
+            &quot;section_sortid&quot;: 1,
+            &quot;section_name&quot;: &quot;第一章：Vue基础&quot;,
+            &quot;is_free&quot;: 1,
+            &quot;video_time&quot;: 13.5            
+        },
+        {
+            &quot;id&quot;: 3,
+            &quot;goods_id&quot;: 102,
+            &quot;parent_id&quot;: 2,
+            &quot;section_sortid&quot;: 1,
+            &quot;section_name&quot;: &quot;1-vue指令&quot;,
+            &quot;is_free&quot;: 1,
+            &quot;video_time&quot;: 8.5
+        }
+    ]
+}
+</code></pre>
+<blockquote>
+<p>响应参数说明</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>参数名称</th>
+<th>参数说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>status</td>
+<td>0:正常 1：异常</td>
+</tr>
+<tr>
+<td>message</td>
+<td>当前课程大纲数组，调用处：<img src="img\p10.png" alt="p10"></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>message数组中对象属性说明</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>参数名称</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>id</td>
+<td>课程章节/小节id</td>
+</tr>
+<tr>
+<td>goods_id</td>
+<td>所属课程</td>
+</tr>
+<tr>
+<td>parent_id</td>
+<td>父id</td>
+</tr>
+<tr>
+<td>section_sortid</td>
+<td>章节/小节排序id，每一级都是从1开始计数</td>
+</tr>
+<tr>
+<td>section_name</td>
+<td>章节/小节名称</td>
+</tr>
+<tr>
+<td>is_free</td>
+<td>1：该章节免费试学   0：收费</td>
+</tr>
+<tr>
+<td>video_time</td>
+<td>小节视频长度，单位：分钟</td>
+</tr>
+<tr>
+<td>video_path</td>
+<td>章节视频地址，如果为空则表示是该数据为1级章节，只有章节下面的小节才有视频地址</td>
+</tr>
+</tbody>
+</table>
+<h2 id="-id-">根据小节ID获取该小节详细数据</h2>
+<blockquote>
+<p>http请求方式：GET</p>
+</blockquote>
+<blockquote>
+<p>请求url： /nc/course/courseDetial/getSectionInfo/参数1</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>请求示例：<a href="http://157.122.54.189:9092/nc/course/courseDetial/getSectionInfo/3">http://157.122.54.189:9092/nc/course/courseDetial/getSectionInfo/3</a></p>
+</blockquote>
+<hr>
+<blockquote>
+<p>请求参数：</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>参数名称</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>参数1</td>
+<td>传入课程大纲的某小节id</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<blockquote>
+<p>响应正确时的JSON返回结果：</p>
+</blockquote>
+<pre><code class="lang-json">{
+    &quot;status&quot;: 0,
+    &quot;message&quot;: {
+        &quot;id&quot;: 3,
+        &quot;goods_id&quot;: 102,
+        &quot;section_name&quot;: &quot;1-vue指令&quot;,
+        &quot;is_free&quot;: 1,
+        &quot;video_path&quot;: &quot;http://157.122.54.189:9092/upload/201809/19/201809191620139216.mp4&quot;,
+        &quot;video_time&quot;: 8.5,
+        &quot;code_path&quot;: &quot;http://157.122.54.189:9092/upload/201809/19/testvuecli.rar&quot;,
+        &quot;notes_path&quot;: &quot;http://157.122.54.189:9092/upload/201809/19/jy.rar&quot;
+    }
+}
+</code></pre>
+<blockquote>
+<p>响应参数说明</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>参数名称</th>
+<th>参数说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>status</td>
+<td>0:正常 1：异常</td>
+</tr>
+<tr>
+<td>message</td>
+<td>当前小节相关数据</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>message数组中对象属性说明</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>参数名称</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>id</td>
+<td>课程章节id</td>
+</tr>
+<tr>
+<td>goods_id</td>
+<td>所属课程</td>
+</tr>
+<tr>
+<td>section_name</td>
+<td>章节名称</td>
+</tr>
+<tr>
+<td>is_free</td>
+<td>1：该章节免费试学   0：收费</td>
+</tr>
+<tr>
+<td>video_time</td>
+<td>章节视频长度，单位：分钟</td>
+</tr>
+<tr>
+<td>video_path</td>
+<td>视频播放地址</td>
+</tr>
+<tr>
+<td>code_path</td>
+<td>章节代码文件下载地址</td>
+</tr>
+<tr>
+<td>notes_path</td>
+<td>章节讲义文件下载地址</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>  业务调用：</p>
+</blockquote>
+<p><img src="img\p11.png" alt="p11"></p>
+<h2 id="-id-">根据小节ID分页获取该小节下所有的问答数据</h2>
+<blockquote>
+<p>http请求方式：GET</p>
+</blockquote>
+<blockquote>
+<p>是否需要登录才能访问：否</p>
+</blockquote>
+<blockquote>
+<p>请求url： /nc/course/courseDetial/getSectionQAByPage/参数1?pageIndex=分页索引&amp;pageSize=单页容量</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>请求示例：<a href="http://157.122.54.189:9092/nc/course/courseDetial/getSectionQAByPage/3?pageIndex=2&amp;pageSize=2">http://157.122.54.189:9092/nc/course/courseDetial/getSectionQAByPage/3?pageIndex=2&amp;pageSize=2</a></p>
+</blockquote>
+<hr>
+<blockquote>
+<p>请求参数：</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>参数名称</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>参数1</td>
+<td>传入课程大纲的某小节id</td>
+</tr>
+<tr>
+<td>pageIndex</td>
+<td>分页索引</td>
+</tr>
+<tr>
+<td>pageSize</td>
+<td>单页容量</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<blockquote>
+<p>响应正确时的JSON返回结果：</p>
+</blockquote>
+<pre><code class="lang-json">{
+    &quot;status&quot;: 0,
+    &quot;message&quot;: [
+        {
+            &quot;id&quot;: 1,
+            &quot;parent_id&quot;: 0,
+            &quot;section_id&quot;: 3,
+            &quot;user_id&quot;: 12,
+            &quot;user_name&quot;: &quot;188888888888&quot;,
+            &quot;user_ip&quot;: null,
+            &quot;content&quot;: &quot;Vue1.0和Vue2.0的区别有哪些&quot;,
+            &quot;add_time&quot;: &quot;2018-10-12T04:37:35.000Z&quot;,
+            &quot;is_reply&quot;: 1,
+            &quot;reply_count&quot;: 1,
+            &quot;replyList&quot;: [
+                {
+                    &quot;id&quot;: 2,
+                    &quot;section_id&quot;: 3,
+                    &quot;parent_id&quot;: 1,
+                    &quot;user_id&quot;: 13,
+                    &quot;user_name&quot;: &quot;19999999&quot;,
+                    &quot;user_ip&quot;: null,
+                    &quot;content&quot;: &quot;&quot;,
+                    &quot;add_time&quot;: &quot;2018-10-12T04:37:35.000Z&quot;,
+                    &quot;is_reply&quot;: 0,
+                    &quot;reply_count&quot;: null
+                }
+            ]
+        }
+    ],
+    &quot;totalCount&quot;: 5,
+    &quot;pageIndex&quot;: 2,
+    &quot;pageSize&quot;: 2
+}
+</code></pre>
+<blockquote>
+<p>响应参数说明</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>参数名称</th>
+<th>参数说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>id</td>
+<td>问题数据id</td>
+</tr>
+<tr>
+<td>parent_id</td>
+<td>0：代表是问题  1：代表是回答这个问题的回复内容</td>
+</tr>
+<tr>
+<td>section_id</td>
+<td>小节id</td>
+</tr>
+<tr>
+<td>user_id</td>
+<td>问题发布人id</td>
+</tr>
+<tr>
+<td>user_name</td>
+<td>问题发布人名称</td>
+</tr>
+<tr>
+<td>user_ip</td>
+<td>问题发布人ip</td>
+</tr>
+<tr>
+<td>content</td>
+<td>问题详细描述</td>
+</tr>
+<tr>
+<td>add_time</td>
+<td>问题发布时间</td>
+</tr>
+<tr>
+<td>is_reply</td>
+<td>1：问题已回复  0：问题未回复</td>
+</tr>
+<tr>
+<td>reply_content</td>
+<td>问题回复内容</td>
+</tr>
+<tr>
+<td>reply_count</td>
+<td>问题回复的条数</td>
+</tr>
+<tr>
+<td>replyList</td>
+<td>当前问题回复内容数组</td>
+</tr>
+<tr>
+<td>totalCount</td>
+<td>数据总条数，可以用来计算分页总数</td>
+</tr>
+<tr>
+<td>pageIndex</td>
+<td>当前请求的页索引</td>
+</tr>
+<tr>
+<td>pageSize</td>
+<td>当前请求的单页容量，可以用来计算分页总数</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>业务调用处：</p>
+</blockquote>
+<p><img src="img\p12.png" alt="p12"></p>
+<h2 id="-">提交小节问题数据(需登录)</h2>
+<blockquote>
+<p>http请求方式：POST</p>
+</blockquote>
+<blockquote>
+<p>是否需要登录才能访问：是</p>
+</blockquote>
+<blockquote>
+<p>请求url： /ch/course/courseDetial/PostSectionQuestion</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>请求示例：<a href="http://157.122.54.189:9092/ch/course/courseDetial/PostSectionQuestion">http://157.122.54.189:9092/ch/course/courseDetial/PostSectionQuestion</a></p>
+</blockquote>
+<hr>
+<blockquote>
+<p>请求参数：</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>参数名称</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>section_id</td>
+<td>小节id</td>
+</tr>
+<tr>
+<td>content</td>
+<td>问题详细描述（富文本字符串）</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<blockquote>
+<p>响应正确时的JSON返回结果：</p>
+</blockquote>
+<pre><code class="lang-json">{
+    &quot;status&quot;: 0,
+    &quot;message&quot;: &quot;问题提交成功&quot;        
+}
+</code></pre>
+<blockquote>
+<p>响应参数说明</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>参数名称</th>
+<th>参数说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>status</td>
+<td>返回状态码，见文档顶部说明</td>
+</tr>
+<tr>
+<td>message</td>
+<td>服务器处理信息</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>业务调用处：视频播放页面下的问题列表中</p>
+</blockquote>
+<p><img src="img\p14.png" alt="p14"></p>
+<h2 id="-">回复小节问题数据(需登录)</h2>
+<blockquote>
+<p>http请求方式：POST</p>
+</blockquote>
+<blockquote>
+<p>是否需要登录才能访问：是</p>
+</blockquote>
+<blockquote>
+<p>请求url： /ch/course/courseDetial/PostSectionResult</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>请求示例：<a href="http://157.122.54.189:9092/ch/course/courseDetial/PostSectionResult">http://157.122.54.189:9092/ch/course/courseDetial/PostSectionResult</a></p>
+</blockquote>
+<hr>
+<blockquote>
+<p>请求参数：</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>参数名称</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>section_id</td>
+<td>小节id</td>
+</tr>
+<tr>
+<td>parent_id</td>
+<td>回复的问题数据id（代表当前回复的是哪个问题）</td>
+</tr>
+<tr>
+<td>content</td>
+<td>回复内容（富文本字符串）</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<blockquote>
+<p>响应正确时的JSON返回结果：</p>
+</blockquote>
+<pre><code class="lang-json">{
+    &quot;status&quot;: 0,
+    &quot;message&quot;: &quot;回复问题成功&quot;
+}
+</code></pre>
+<blockquote>
+<p>响应参数说明</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>参数名称</th>
+<th>参数说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>status</td>
+<td>返回状态码，见文档顶部说明</td>
+</tr>
+<tr>
+<td>message</td>
+<td>服务器处理信息</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>业务调用处：点击视频播放页面下的问题列表数据中的回复按钮</p>
+</blockquote>
+<p><img src="img\p14.png" alt="p14"></p>
+<h2 id="-id-">根据小节ID分页获取该小节下当前用户的笔记数据(需登录)</h2>
+<blockquote>
+<p>http请求方式：GET</p>
+</blockquote>
+<blockquote>
+<p>是否需要登录才能访问：是  , 请使用 18888888888 ( 密码：123456) 这个用户登录才有笔记数据</p>
+</blockquote>
+<blockquote>
+<p>请求url： /ch/course/courseDetial/getSectionNotesByPage/参数1?pageIndex=分页索引&amp;pageSize=单页容量</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>请求示例：<a href="http://157.122.54.189:9092/ch/course/courseDetial/getSectionQAByPage/3?pageIndex=1&amp;pageSize=2">http://157.122.54.189:9092/ch/course/courseDetial/getSectionQAByPage/3?pageIndex=1&amp;pageSize=2</a></p>
+</blockquote>
+<hr>
+<blockquote>
+<p>请求参数：</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>参数名称</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>参数1</td>
+<td>传入课程大纲的某小节id</td>
+</tr>
+<tr>
+<td>pageIndex</td>
+<td>分页索引</td>
+</tr>
+<tr>
+<td>pageSize</td>
+<td>单页容量</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<blockquote>
+<p>响应正确时的JSON返回结果：</p>
+</blockquote>
+<pre><code class="lang-json">{
+    &quot;status&quot;: 0,
+    &quot;message&quot;: [
+        {
+            &quot;id&quot;: 3,
+            &quot;section_id&quot;: 3,
+            &quot;user_id&quot;: 12,
+            &quot;user_name&quot;: &quot;1888888&quot;,
+            &quot;user_ip&quot;: null,
+            &quot;notes_content&quot;: &quot;&lt;p&gt;&lt;span style=\&quot;color: rgb(0, 112, 192);\&quot;&gt;&lt;strong&gt;1、Vue 是什么？&lt;/strong&gt;&quot;,
+            &quot;add_time&quot;: null
+        }
+    ],
+    &quot;totalCount&quot;: 3,
+    &quot;pageIndex&quot;: 1,
+    &quot;pageSize&quot;: 2
+}
+</code></pre>
+<blockquote>
+<p>响应参数说明</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>参数名称</th>
+<th>参数说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>id</td>
+<td>笔记数据id</td>
+</tr>
+<tr>
+<td>section_id</td>
+<td>小节id</td>
+</tr>
+<tr>
+<td>user_id</td>
+<td>笔记发布人id</td>
+</tr>
+<tr>
+<td>user_name</td>
+<td>笔记发布人名称</td>
+</tr>
+<tr>
+<td>user_ip</td>
+<td>笔记发布人ip</td>
+</tr>
+<tr>
+<td>notes_content</td>
+<td>笔记详细描述</td>
+</tr>
+<tr>
+<td>add_time</td>
+<td>发布时间</td>
+</tr>
+<tr>
+<td>totalCount</td>
+<td>符合条件的数据总条数，可以用来计算分页总数</td>
+</tr>
+<tr>
+<td>pageIndex</td>
+<td>当前请求的页索引</td>
+</tr>
+<tr>
+<td>pageSize</td>
+<td>当前请求的单页容量,可以用来计算分页总数</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>业务调用处：</p>
+</blockquote>
+<p><img src="img\p13.png" alt="p13"></p>
+<h2 id="-">提交小节笔记数据(需登录)</h2>
+<blockquote>
+<p>http请求方式：POST</p>
+</blockquote>
+<blockquote>
+<p>是否需要登录才能访问：是</p>
+</blockquote>
+<blockquote>
+<p>请求url： /ch/course/courseDetial/PostNotes</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>请求示例：<a href="http://157.122.54.189:9092/ch/course/courseDetial/PostNotes">http://157.122.54.189:9092/ch/course/courseDetial/PostNotes</a></p>
+</blockquote>
+<hr>
+<blockquote>
+<p>请求参数：</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>参数名称</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>section_id</td>
+<td>小节id</td>
+</tr>
+<tr>
+<td>content</td>
+<td>笔记内容（富文本字符串）</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<blockquote>
+<p>响应正确时的JSON返回结果：</p>
+</blockquote>
+<pre><code class="lang-json">{
+    &quot;status&quot;: 0,
+    &quot;message&quot;: &quot;提交笔记成功&quot;
+}
+</code></pre>
+<blockquote>
+<p>响应参数说明</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>参数名称</th>
+<th>参数说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>status</td>
+<td>返回状态码，见文档顶部说明</td>
+</tr>
+<tr>
+<td>message</td>
+<td>服务器处理信息</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>业务调用处：视频播放页面下的笔记列表中</p>
+</blockquote>
+<p><img src="img\p14.png" alt="p14"></p>
+<h1 id="-">课程购买</h1>
+<h2 id="-">加入购物车(需登录)</h2>
+<blockquote>
+<p>http请求方式：POST</p>
+</blockquote>
+<blockquote>
+<p>是否需要登录才能访问：是</p>
+</blockquote>
+<blockquote>
+<p>请求url： /ch/shop/postshopcar</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>请求示例：<a href="http://157.122.54.189:9092/ch/shop/postshopcar">http://157.122.54.189:9092/ch/shop/postshopcar</a></p>
+</blockquote>
+<hr>
+<blockquote>
+<p>请求参数：</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>参数名称</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>goods_id</td>
+<td>商品id（测试可以使用102）</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<blockquote>
+<p>响应JSON返回结果：</p>
+</blockquote>
+<pre><code class="lang-json">情况1：如果商品已经存在于当前用户购物车中，则无需重复添加
+{  
+    &quot;status&quot;: 1,
+    &quot;message&quot;: &quot;该商品已经存在于购物车，无需重复添加&quot;
+}
+
+正常情况：
+{  
+    &quot;status&quot;: 0,
+    &quot;message&quot;: &quot;商品已加入购物车&quot;
+}
+</code></pre>
+<blockquote>
+<p>响应参数说明</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>参数名称</th>
+<th>参数说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>status</td>
+<td>返回状态码，见文档顶部说明</td>
+</tr>
+<tr>
+<td>message</td>
+<td>服务器处理信息</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>业务调用处：点击加入购物车按钮</p>
+</blockquote>
+<p><img src="img\p15.png" alt="p15"></p>
+<h2 id="-">用户购物车列表数据获取(需登录)</h2>
+<blockquote>
+<p>http请求方式：GET</p>
+</blockquote>
+<blockquote>
+<p>是否需要登录才能访问：是</p>
+</blockquote>
+<blockquote>
+<p>请求url： /ch/shop/getshopcarlist</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>请求示例：<a href="http://157.122.54.189:9092/ch/shop/getshopcarlist">http://157.122.54.189:9092/ch/shop/getshopcarlist</a></p>
+</blockquote>
+<hr>
+<blockquote>
+<p>请求参数：无</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>响应JSON返回结果：</p>
+</blockquote>
+<pre><code class="lang-json">{
+    &quot;status&quot;: 0,
+    &quot;message&quot;: [
+        {
+            &quot;shop_car_id&quot;: 1,
+            &quot;goods_id&quot;: 102,
+            &quot;title&quot;: &quot;【前端】Vue实现移动商城购物网站项目&quot;,
+            &quot;timeout&quot;: 12,
+            &quot;sell_price&quot;: 399,
+            &quot;img_url&quot;: &quot;http://157.122.54.189:9092/upload/201809/17/201809171437171126.jpg&quot;
+        }
+    ]
+}
+</code></pre>
+<blockquote>
+<p>响应参数说明</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>参数名称</th>
+<th>参数说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>shop_car_id</td>
+<td>购物车数据id值</td>
+</tr>
+<tr>
+<td>goods_id</td>
+<td>课程id</td>
+</tr>
+<tr>
+<td>title</td>
+<td>课程名称</td>
+</tr>
+<tr>
+<td>timeout</td>
+<td>课程服务周期，单位：月</td>
+</tr>
+<tr>
+<td>sell_price</td>
+<td>课程价格</td>
+</tr>
+<tr>
+<td>img_url</td>
+<td>课程图片</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>业务调用处：购物车列表</p>
+</blockquote>
+<p><img src="img\p16.png" alt="p16"></p>
+<h2 id="-">删除用户购物车指定课程数据(需登录)</h2>
+<blockquote>
+<p>http请求方式：GET</p>
+</blockquote>
+<blockquote>
+<p>是否需要登录才能访问：是</p>
+</blockquote>
+<blockquote>
+<p>请求url： /ch/shop/deleteshopcar/参数1</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>请求示例：<a href="http://157.122.54.189:9092/ch/shop/deleteshopcar/103">http://157.122.54.189:9092/ch/shop/deleteshopcar/103</a></p>
+</blockquote>
+<hr>
+<blockquote>
+<p>请求参数：</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>参数名称</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>参数1</td>
+<td>购物车id</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<blockquote>
+<p>响应JSON返回结果：</p>
+</blockquote>
+<pre><code class="lang-json">{  
+    &quot;status&quot;: 0,
+    &quot;message&quot;: &quot;商品数据删除成功&quot;
+}
+</code></pre>
+<blockquote>
+<p>响应参数说明</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>参数名称</th>
+<th>参数说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>status</td>
+<td>返回状态码，见文档顶部说明</td>
+</tr>
+<tr>
+<td>message</td>
+<td>服务器处理信息</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>业务调用处：点击购物车列表中的删除按钮</p>
+</blockquote>
+<p><img src="img\p16.png" alt="p16"></p>
+<h2 id="-">下单操作(需登录)</h2>
+<blockquote>
+<p>http请求方式：POST</p>
+</blockquote>
+<blockquote>
+<p>是否需要登录才能访问：是</p>
+</blockquote>
+<blockquote>
+<p>请求url： /ch/shop/postOrder</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>请求示例：<a href="http://157.122.54.189:9092/ch/shop/postshopcar">http://157.122.54.189:9092/ch/shop/postshopcar</a></p>
+</blockquote>
+<hr>
+<blockquote>
+<p>请求参数：</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>参数名称</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>amount</td>
+<td>订单总金额</td>
+</tr>
+<tr>
+<td>payment_id</td>
+<td>支付方式，1: 微信支付  2：支付宝支付</td>
+</tr>
+<tr>
+<td>goodsIds</td>
+<td>订单购买的课程id字符串，多个课程id之间使用逗号隔开，例如：1,2,3</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<blockquote>
+<p>响应JSON返回结果：</p>
+</blockquote>
+<pre><code class="lang-json">{
+    &quot;status&quot;: 0,
+    &quot;message&quot;: {
+        &quot;order_id&quot;: 21,
+        &quot;order_no&quot;: &quot;BD2018101301829505&quot;,
+        &quot;amount&quot;: &quot;398&quot;,
+        &quot;remark&quot;: &quot;【前端】Vue实现移动商城购物网站项目   原价：￥399 &lt;br /&gt; 【前端】快应用实战开发 - 快速上手   原价：￥0 &lt;br /&gt; &quot;
+    }
+}
+</code></pre>
+<blockquote>
+<p>响应参数说明</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>参数名称</th>
+<th>参数说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>order_id</td>
+<td>订单id值</td>
+</tr>
+<tr>
+<td>order_no</td>
+<td>订单号</td>
+</tr>
+<tr>
+<td>amount</td>
+<td>订单总金额</td>
+</tr>
+<tr>
+<td>remark</td>
+<td>订单描述</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>业务调用处：提交订单 按钮</p>
+</blockquote>
+<p><img src="img\p17.png" alt="p17"></p>
+<blockquote>
+<p>确认订单</p>
+</blockquote>
+<p><img src="img\p18.png" alt="p18"></p>
+<p>点击“确认支付”按钮后进入：</p>
+<p><img src="img\p19.png" alt="p19"></p>
+<h2 id="-">获取微信服务器支付链接(需登录)</h2>
+<blockquote>
+<p>http请求方式：POST</p>
+</blockquote>
+<blockquote>
+<p>是否需要登录才能访问：是</p>
+</blockquote>
+<blockquote>
+<p>请求url： /ch/shop/wxpay</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>请求示例：<a href="http://157.122.54.189:9092/ch/shop/wxpay">http://157.122.54.189:9092/ch/shop/wxpay</a></p>
+</blockquote>
+<hr>
+<blockquote>
+<p>请求参数：</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>参数名称</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>order_id</td>
+<td>订单id</td>
+</tr>
+<tr>
+<td>out_trade_no</td>
+<td>订单号</td>
+</tr>
+<tr>
+<td>nonce_str</td>
+<td>订单金额（不管传入什么金额，后台只支付一分钱）</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<blockquote>
+<p>响应JSON返回结果：</p>
+</blockquote>
+<pre><code class="lang-json">{
+    &quot;status&quot;: 0,
+    &quot;message&quot;: {
+        &quot;order_id&quot;: &quot;24&quot;,
+        &quot;code_url&quot;: &quot;weixin://wxpay/bizpayurl?pr=oEfhOMo&quot;,
+        &quot;out_trade_no&quot;: &quot;BD20181113202421858&quot;,
+        &quot;nonce_str&quot;: &quot;4yPTihRzJ8JQw3TF6B3Gij87fXe8MR8P&quot;
+    }
+}
+</code></pre>
+<blockquote>
+<p>响应参数说明</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>参数名称</th>
+<th>参数说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>order_id</td>
+<td>传回来当前订单id</td>
+</tr>
+<tr>
+<td>code_url</td>
+<td>微信服务器给的支付链接，生成二维码供用户扫描实施支付行为</td>
+</tr>
+<tr>
+<td>out_trade_no</td>
+<td>订单号，在调用查询支付状态接口的时候传入</td>
+</tr>
+<tr>
+<td>nonce_str</td>
+<td>支付随机字符串，在调用查询支付状态接口的时候传入</td>
+</tr>
+</tbody>
+</table>
+<h2 id="-">支付状态查询(需登录)</h2>
+<blockquote>
+<p>http请求方式：POST</p>
+</blockquote>
+<blockquote>
+<p>是否需要登录才能访问：是</p>
+</blockquote>
+<blockquote>
+<p>请求url： /ch/shop/checkpay</p>
+<p>此接口一旦查询到微信支付状态变为SUCCESS后，会将订单id对应的订单状态修改为已支付状态</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>请求示例：<a href="http://157.122.54.189:9092/ch/shop/checkpay">http://157.122.54.189:9092/ch/shop/checkpay</a></p>
+</blockquote>
+<hr>
+<blockquote>
+<p>请求参数：</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>参数名称</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>order_id</td>
+<td>订单id</td>
+</tr>
+<tr>
+<td>out_trade_no</td>
+<td>订单号</td>
+</tr>
+<tr>
+<td>nonce_str</td>
+<td>订单金额（不管传入什么金额，后台只支付一分钱）</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<blockquote>
+<p>响应JSON返回结果：</p>
+</blockquote>
+<pre><code class="lang-json">未支付状态：
+{
+    &quot;status&quot;: 0,
+    &quot;message&quot;: {
+        &quot;trade_state&quot;: &quot;NOTPAY&quot;,
+        &quot;statusTxt&quot;: &quot;订单未支付&quot;
+    }
+}
+
+已支付状态：
+{
+    &quot;status&quot;: 0,
+    &quot;message&quot;: {
+        &quot;trade_state&quot;: &quot;SUCCESS&quot;,
+        &quot;statusTxt&quot;: &quot;支付完成&quot;
+    }
+}
+</code></pre>
+<h1 id="-">个人中心</h1>
+<h2 id="-">分页获取我的订单列表(需登录)</h2>
+<blockquote>
+<p>http请求方式：GET</p>
+</blockquote>
+<blockquote>
+<p>请求url：/ch/mycenter/getMyOrderListByPage/参数1?pageIndex=页码&amp;pageSize=单页容量</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>请求示例：<a href="http://157.122.54.189:9092/ch/mycenter/getMyOrderListByPage/-1?pageIndex=1&amp;pageSize=10">http://157.122.54.189:9092/ch/mycenter/getMyOrderListByPage/-1?pageIndex=1&amp;pageSize=10</a></p>
+</blockquote>
+<pre><code> 注意：在没有下单的情况下，请求示例可以使用 用户： 18888888888 密码：123456 登录后获取已有数据
+</code></pre><hr>
+<blockquote>
+<p>请求参数：</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>参数名称</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>参数1</td>
+<td>订单分类，-1:全部订单  0：待付款 1：已完成 2：已取消 （数据来源于此接口中的OrderTypeList）</td>
+</tr>
+<tr>
+<td>pageIndex</td>
+<td>页码，最小值为1</td>
+</tr>
+<tr>
+<td>pageSize</td>
+<td>单页容量，默认是10</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<blockquote>
+<p>响应正确时的JSON返回结果：</p>
+</blockquote>
+<pre><code class="lang-json">{
+    &quot;status&quot;: 0,
+    &quot;message&quot;: {
+        &quot;OrderTypeList&quot;: [
+            {
+                &quot;id&quot;: -1,
+                &quot;title&quot;: &quot;全部订单&quot;
+            },
+            {
+                &quot;id&quot;: 0,
+                &quot;title&quot;: &quot;待付款&quot;
+            },
+            {
+                &quot;id&quot;: 1,
+                &quot;title&quot;: &quot;已完成&quot;
+            },
+            {
+                &quot;id&quot;: 2,
+                &quot;title&quot;: &quot;已取消&quot;
+            }
+        ],
+        &quot;orderList&quot;: [
+            {
+                &quot;id&quot;: 21,
+                &quot;order_no&quot;: &quot;BD2018101301829505&quot;,
+                &quot;add_time&quot;: &quot;2018-10-12T16:18:29.000Z&quot;,
+                &quot;payable_amount&quot;: 398,
+                &quot;real_amount&quot;: 0,
+                &quot;status&quot;: 0,
+                &quot;statusName&quot;: &quot;待付款&quot;,
+                &quot;order_goods_list&quot;: [
+                    {
+                        &quot;id&quot;: 15,
+                        &quot;order_id&quot;: 21,
+                        &quot;goods_id&quot;: 102,
+                        &quot;goods_title&quot;: &quot;【前端】Vue实现移动商城购物网站项目&quot;,
+                        &quot;timeout_time&quot;: &quot;2019-10-12T16:18:29.000Z&quot;,
+                        &quot;lesson_star&quot;: 5,
+                        &quot;img_url&quot;: &quot;http://157.122.54.189:9092/upload/201809/17/201809171437171126.jpg&quot;
+                    },
+                    {
+                        &quot;id&quot;: 16,
+                        &quot;order_id&quot;: 21,
+                        &quot;goods_id&quot;: 103,
+                        &quot;goods_title&quot;: &quot;【前端】快应用实战开发 - 快速上手&quot;,
+                        &quot;timeout_time&quot;: &quot;2019-10-12T16:18:29.000Z&quot;,
+                        &quot;lesson_star&quot;: 5,
+                        &quot;img_url&quot;: &quot;http://157.122.54.189:9092/upload/201809/19/201809191054524297.jpg&quot;
+                    }
+                ]
+            }
+        ]
+    },
+    &quot;totalCount&quot;: 2,
+    &quot;pageIndex&quot;: 1,
+    &quot;pageSize&quot;: 10
+}
+</code></pre>
+<blockquote>
+<p>响应参数说明</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>参数名称</th>
+<th>参数说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>status</td>
+<td>0:正常 1：异常</td>
+</tr>
+<tr>
+<td>message</td>
+<td>符合条件的单页课程数据数组对象，对象属性说明，请参考下面表格</td>
+</tr>
+<tr>
+<td>totalCount</td>
+<td>符合条件的课程总数量</td>
+</tr>
+<tr>
+<td>pageIndex</td>
+<td>当前请求的页码</td>
+</tr>
+<tr>
+<td>pageSize</td>
+<td>当前请求的单页容量</td>
+</tr>
+</tbody>
+</table>
+<p>message.OrderTypeList参数数组对象属性说明：获取订单页面上的订单筛选条件</p>
+<table>
+<thead>
+<tr>
+<th>参数名称</th>
+<th>参数说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>id</td>
+<td>类别id，-1:全部订单  0：待付款 1：已完成 2：已取消</td>
+</tr>
+<tr>
+<td>title</td>
+<td>类别名称</td>
+</tr>
+</tbody>
+</table>
+<p>message.orderList参数数组对象属性说明：</p>
+<table>
+<thead>
+<tr>
+<th>参数名称</th>
+<th>参数说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>id</td>
+<td>订单数据id</td>
+</tr>
+<tr>
+<td>order_no</td>
+<td>订单号</td>
+</tr>
+<tr>
+<td>add_time</td>
+<td>下单时间</td>
+</tr>
+<tr>
+<td>payable_amount</td>
+<td>订单总金额</td>
+</tr>
+<tr>
+<td>real_amount</td>
+<td>实际支付金额</td>
+</tr>
+<tr>
+<td>status</td>
+<td>订单状态 0：待付款 1：已完成 2：已取消</td>
+</tr>
+<tr>
+<td>statusName</td>
+<td>订单状态名称</td>
+</tr>
+<tr>
+<td>order_goods_list</td>
+<td>一个数组，存储当前订单所购买的课程数据对象</td>
+</tr>
+</tbody>
+</table>
+<p>message.orderList.order_goods_list参数数组对象属性说明</p>
+<table>
+<thead>
+<tr>
+<th>参数名称</th>
+<th>参数说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>id</td>
+<td>编号</td>
+</tr>
+<tr>
+<td>order_id</td>
+<td>课程所属订单</td>
+</tr>
+<tr>
+<td>goods_id</td>
+<td>课程编号</td>
+</tr>
+<tr>
+<td>goods_title</td>
+<td>课程名称</td>
+</tr>
+<tr>
+<td>timeout_time</td>
+<td>当前订单所购该课程的到期时间，该课程的开始时间为订单下单时间</td>
+</tr>
+<tr>
+<td>lesson_star</td>
+<td>课程评分</td>
+</tr>
+<tr>
+<td>img_url</td>
+<td>课程图片</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>业务调用处：</p>
+</blockquote>
+<p><img src="img\p20.png" alt="p20"></p>
+<h2 id="-">获取我的课程列表(需登录)</h2>
+<blockquote>
+<p>http请求方式：GET</p>
+</blockquote>
+<blockquote>
+<p>是否需要登录才能访问：是</p>
+</blockquote>
+<blockquote>
+<p>请求url： /ch/mycenter/getMyCourseList</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>请求示例：<a href="http://157.122.54.189:9092/ch/mycenter/getMyCourseList">http://157.122.54.189:9092/ch/mycenter/getMyCourseList</a></p>
+</blockquote>
+<hr>
+<blockquote>
+<p>请求参数：无</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>响应JSON返回结果：</p>
+</blockquote>
+<pre><code class="lang-json">{
+    &quot;status&quot;: 0,
+    &quot;message&quot;: {
+        &quot;currentCourse&quot;: {
+            &quot;order_id&quot;: 20,
+            &quot;goods_id&quot;: 103,
+            &quot;goods_title&quot;: &quot;【前端】快应用实战开发 - 快速上手&quot;,
+            &quot;last_section&quot;: 28,
+            &quot;last_section_name&quot;: &quot;第一章：快应用基础&quot;,
+            &quot;begin_time&quot;: &quot;2018-10-12T16:17:09.000Z&quot;,
+            &quot;end_time&quot;: &quot;2019-10-12T16:17:09.000Z&quot;,
+            &quot;complate_percent&quot;: 0,
+            &quot;update_time&quot;: &quot;2018-10-12T16:17:09.000Z&quot;,
+            &quot;update_timestamp&quot;: 1539361029000
+        },
+        &quot;CourseList&quot;: [
+            {
+                &quot;order_id&quot;: 20,
+                &quot;goods_id&quot;: 103,
+                &quot;goods_title&quot;: &quot;【前端】快应用实战开发 - 快速上手&quot;,
+                &quot;last_section&quot;: 28,
+                &quot;last_section_name&quot;: &quot;第一章：快应用基础&quot;,
+                &quot;begin_time&quot;: &quot;2018-10-12T16:17:09.000Z&quot;,
+                &quot;end_time&quot;: &quot;2019-10-12T16:17:09.000Z&quot;,
+                &quot;complate_percent&quot;: 0,
+                &quot;update_time&quot;: &quot;2018-10-12T16:17:09.000Z&quot;,
+                &quot;update_timestamp&quot;: 1539361029000
+            },
+            {
+                &quot;order_id&quot;: 20,
+                &quot;goods_id&quot;: 102,
+                &quot;goods_title&quot;: &quot;【前端】Vue实现移动商城购物网站项目&quot;,
+                &quot;last_section&quot;: 2,
+                &quot;last_section_name&quot;: &quot;第一章：Vue基础&quot;,
+                &quot;begin_time&quot;: &quot;2018-10-12T16:17:09.000Z&quot;,
+                &quot;end_time&quot;: &quot;2019-10-12T16:17:09.000Z&quot;,
+                &quot;complate_percent&quot;: 0,
+                &quot;update_time&quot;: &quot;2018-10-11T16:17:09.000Z&quot;,
+                &quot;update_timestamp&quot;: 1539274629000
+            }
+        ]
+    }
+}
+</code></pre>
+<blockquote>
+<p>响应参数说明</p>
+</blockquote>
+<p>currentCourse：代表最近学习课程对象</p>
+<p>CourseList：所有课程对象数组</p>
+<table>
+<thead>
+<tr>
+<th>参数名称</th>
+<th>参数说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>order_id</td>
+<td>订单id</td>
+</tr>
+<tr>
+<td>goods_id</td>
+<td>课程id</td>
+</tr>
+<tr>
+<td>goods_title</td>
+<td>课程标题</td>
+</tr>
+<tr>
+<td>last_section</td>
+<td>学习课程的小节id （用户点击小节播放的时候要调用api：/ch/mycenter/updateGoodsSection/课程小节id/课程小节名称更新）</td>
+</tr>
+<tr>
+<td>last_section_name</td>
+<td>学习课程的小节名称（用户点击小节播放的时候要调用api：/ch/mycenter/updateGoodsSection/课程小节id/课程小节名称更新）</td>
+</tr>
+<tr>
+<td>begin_time</td>
+<td>课程开始日期</td>
+</tr>
+<tr>
+<td>end_time</td>
+<td>课程失效期日期</td>
+</tr>
+<tr>
+<td>complate_percent</td>
+<td>当前学习完成百分比</td>
+</tr>
+<tr>
+<td>update_time</td>
+<td>最新学习时间（用户点击小节播放的时候要调用api：/ch/mycenter/updateGoodsSection/课程小节id/课程小节名称更新）</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>业务调用处：</p>
+</blockquote>
+<p><img src="img\p21.png" alt="p21"></p>
+<h2 id="-">个人设置页面(需登录)</h2>
+<p>暂时不做</p>
+<h1 id="-api">其他辅助API</h1>
+<h2 id="-dt_order_goods-update_time-">更新dt_order_goods中的章节，update_time，学习百分比</h2>
+<blockquote>
+<p>http请求方式：POST</p>
+</blockquote>
+<blockquote>
+<p>是否需要登录才能访问：是</p>
+</blockquote>
+<blockquote>
+<p>请求url： /ch/mycenter/updateGoodsSection</p>
+</blockquote>
+<blockquote>
+<p>接口作用：主要是为了个人中心我的课程中的（最近课程，观看百分比，当前进度章节数据更新）</p>
+</blockquote>
+<p><img src="img\p23.png" alt="p23"></p>
+<hr>
+<blockquote>
+<p>请求示例：<a href="http://157.122.54.189:9092/ch/mycenter/updateGoodsSection">http://157.122.54.189:9092/ch/mycenter/updateGoodsSection</a></p>
+</blockquote>
+<hr>
+<blockquote>
+<p>请求参数：</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>参数名称</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>goods_id</td>
+<td>课程id</td>
+</tr>
+<tr>
+<td>section_id</td>
+<td>章节id</td>
+</tr>
+<tr>
+<td>section_name</td>
+<td>章节名称</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<blockquote>
+<p>响应正确时的JSON返回结果：</p>
+</blockquote>
+<pre><code class="lang-json">{
+    &quot;status&quot;: 0,
+    &quot;message&quot;: &quot;更新我的课程数据成功&quot;
+}
+</code></pre>
+<blockquote>
+<p>响应参数说明</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>参数名称</th>
+<th>参数说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>status</td>
+<td>返回状态码，见文档顶部说明</td>
+</tr>
+<tr>
+<td>message</td>
+<td>服务器处理信息</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>接口调用处：在点击章节播放视频的时候，同步调用此接口进行相关数据更新</p>
+</blockquote>
+<p><img src="img\p22.png" alt="p22"></p>
+<h1 id="-">管理端-课程维护</h1>
+<h2 id="-">课程属性列表获取（无需登录）</h2>
+<p><a href="http://localhost:9092/nc/admin/getCourseTypes">http://localhost:9092/nc/admin/getCourseTypes</a></p>
+<blockquote>
+<p>http请求方式：GET</p>
+</blockquote>
+<blockquote>
+<p>是否需要登录才能访问：否</p>
+</blockquote>
+<blockquote>
+<p>请求url：/nc/admin/getCourseTypes</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>请求示例：<a href="http://157.122.54.189:9092/nc/admin/getCourseTypes">http://157.122.54.189:9092/nc/admin/getCourseTypes</a></p>
+</blockquote>
+<hr>
+<blockquote>
+<p>请求参数：无</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>响应JSON返回结果：</p>
+</blockquote>
+<pre><code class="lang-json">{
+    &quot;status&quot;: 0,
+    &quot;message&quot;: [
+        {
+            &quot;tid&quot;: -1,
+            &quot;title&quot;: &quot;所有类型&quot;
+        },
+        {
+            &quot;tid&quot;: 1,
+            &quot;title&quot;: &quot;热门&quot;
+        },
+        {
+            &quot;tid&quot;: 2,
+            &quot;title&quot;: &quot;初级&quot;
+        },
+        {
+            &quot;tid&quot;: 3,
+            &quot;title&quot;: &quot;中级&quot;
+        },
+        {
+            &quot;tid&quot;: 4,
+            &quot;title&quot;: &quot;高级&quot;
+        },
+        {
+            &quot;tid&quot;: 5,
+            &quot;title&quot;: &quot;置顶&quot;
+        },
+        {
+            &quot;tid&quot;: 6,
+            &quot;title&quot;: &quot;轮播&quot;
+        }
+    ]
+}
+</code></pre>
+<blockquote>
+</blockquote>
+<blockquote>
+<p>业务调用处：</p>
+</blockquote>
+<p><img src="img\pa24.png" alt="pa24"></p>
+<h2 id="-">分页获取课程数据（需登录）</h2>
+<p><a href="http://localhost:9092/ch/admin/getCourseListByPager?cate_id=-1&amp;type=-1&amp;title=&amp;pageIndex=1&amp;pageSize=10">http://localhost:9092/ch/admin/getCourseListByPager?cate_id=-1&amp;type=-1&amp;title=&amp;pageIndex=1&amp;pageSize=10</a></p>
+<blockquote>
+<p>http请求方式：GET</p>
+</blockquote>
+<blockquote>
+<p>请求url：/ch/admin/getCourseListByPager?cate_id=课程分类&amp;type=课程分类属性title=课程标题&amp;pageIndex=页码&amp;pageSize=单页容量</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>请求示例：<a href="http://157.122.54.189:9092/ch/admin/getCourseListByPager?cate_id=-1&amp;type=-1&amp;title=&amp;pageIndex=1&amp;pageSize=10">http://157.122.54.189:9092/ch/admin/getCourseListByPager?cate_id=-1&amp;type=-1&amp;title=&amp;pageIndex=1&amp;pageSize=10</a></p>
+</blockquote>
+<pre><code> 注意：请求示例可以使用 用户： 18888888888 密码：123456 登录后获取已有数据
+</code></pre><hr>
+<blockquote>
+<p>请求参数：</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>参数名称</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>cate_id</td>
+<td>通过课程分类id搜索课程，如果是-1则全部返回</td>
+</tr>
+<tr>
+<td></td>
+<td>传入课程属性查找课程，值来源于：<a href="http://157.122.54.189:9092/nc/admin/getCourseTypes">http://157.122.54.189:9092/nc/admin/getCourseTypes</a> 接口，如果是-1则全部返回</td>
+</tr>
+<tr>
+<td></td>
+<td>课程标题（根据标题可以模糊查找课程）</td>
+</tr>
+<tr>
+<td>pageIndex</td>
+<td>页码，最小值为1</td>
+</tr>
+<tr>
+<td>pageSize</td>
+<td>单页容量，默认是10</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<blockquote>
+<p>响应正确时的JSON返回结果：</p>
+</blockquote>
+<pre><code class="lang-json">{
+    &quot;status&quot;: 0,
+    &quot;message&quot;: [
+        {            
+            &quot;id&quot;: 113,
+            &quot;title&quot;: &quot;6节课掌握Python爬虫&quot;,
+            &quot;is_hot&quot;: 1,
+            &quot;is_top&quot;: 1,
+            &quot;is_slide&quot;: 1,
+            &quot;img_url&quot;: &quot;http://157.122.54.189:9092/upload/201809/19/201809191145158376.jpg&quot;,
+            &quot;lesson_level&quot;: &quot;初级&quot;,
+            &quot;click&quot;: 9876,
+              &quot;lesson_star&quot;:5,
+            &quot;sub_title&quot;: &quot;随着大数据时代的到来，人们对数据资源的需求越来越多，而爬虫是一种很好的自动采集数据的手段。那么，如何才能精通Python网络爬虫呢？学习Python网络爬虫的路线应该如何进行呢？就让本视频来为你讲述吧。&quot;,
+            &quot;add_time&quot;: &quot;2018-10-12T16:17:09.000Z&quot;
+        }
+    ],
+    &quot;totalCount&quot;: 12,
+    &quot;pageIndex&quot;: 1,
+    &quot;pageSize&quot;: 1
+}
+</code></pre>
+<blockquote>
+<p>响应参数说明</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>参数名称</th>
+<th>参数说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>id</td>
+<td>课程id</td>
+</tr>
+<tr>
+<td>title</td>
+<td>课程标题</td>
+</tr>
+<tr>
+<td>is_hot</td>
+<td>1：热门课程  0：非热门课程</td>
+</tr>
+<tr>
+<td>is_top</td>
+<td>1：推荐课程  0：普通课程</td>
+</tr>
+<tr>
+<td>is_slide</td>
+<td>1：课程在首页轮播展示  0：不进入首页轮播</td>
+</tr>
+<tr>
+<td>img_url</td>
+<td>课程图片</td>
+</tr>
+<tr>
+<td>lesson_level</td>
+<td>课程难度等级</td>
+</tr>
+<tr>
+<td>click</td>
+<td>课程学习人数</td>
+</tr>
+<tr>
+<td>lesson_star</td>
+<td>课程评分</td>
+</tr>
+<tr>
+<td>sub_title</td>
+<td>课程简述</td>
+</tr>
+<tr>
+<td>totalCount</td>
+<td>符合条件的课程总数量</td>
+</tr>
+<tr>
+<td>pageIndex</td>
+<td>当前请求的页码</td>
+</tr>
+<tr>
+<td>pageSize</td>
+<td>当前请求的单页容量</td>
+</tr>
+<tr>
+<td>add_time</td>
+<td>添加时间</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>业务调用处：</p>
+</blockquote>
+<p><img src="img\pa25.png" alt="pa25"></p>
+<h2 id="-">删除课程数据（需登录）</h2>
+<p><a href="http://localhost:9092/ch/admin/deleteCourse/:ids">http://localhost:9092/ch/admin/deleteCourse/:ids</a></p>
+<blockquote>
+<p>http请求方式：GET</p>
+</blockquote>
+<blockquote>
+<p>是否需要登录才能访问：是</p>
+</blockquote>
+<blockquote>
+<p>请求url： /ch/admin/deleteCourse/:ids</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>请求示例：<a href="http://157.122.54.189:9092/ch/admin/deleteCourse/:ids">http://157.122.54.189:9092/ch/admin/deleteCourse/:ids</a></p>
+</blockquote>
+<hr>
+<blockquote>
+<p>请求参数：</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>参数名称</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ids</td>
+<td>要删除的课程id，多个使用逗号分隔，例如：1,2,3</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<blockquote>
+<p>响应JSON返回结果：</p>
+</blockquote>
+<pre><code class="lang-json">{
+    &quot;status&quot;: 0,
+    &quot;message&quot;: &quot;课程删除成功&quot;
+}
+</code></pre>
+<blockquote>
+</blockquote>
+<blockquote>
+<p>业务调用处：</p>
+</blockquote>
+<p><img src="img\pa26.png" alt="pa26"></p>
+<h2 id="-">新增课程（需登录）</h2>
+<p><a href="http://localhost:9092/ch/admin/addCourse">http://localhost:9092/ch/admin/addCourse</a></p>
+<blockquote>
+<p>http请求方式：POST</p>
+</blockquote>
+<blockquote>
+<p>是否需要登录才能访问：是</p>
+</blockquote>
+<blockquote>
+<p>请求url：/ch/admin/addCourse</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>请求示例：<a href="http://157.122.54.189:9092/ch/admin/addCourse">http://157.122.54.189:9092/ch/admin/addCourse</a></p>
+</blockquote>
+<hr>
+<blockquote>
+<p>请求参数：</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>参数名称</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>category_id</td>
+<td>课程所属分类</td>
+</tr>
+<tr>
+<td>title</td>
+<td>课程标题</td>
+</tr>
+<tr>
+<td>sub_title</td>
+<td>课程简述</td>
+</tr>
+<tr>
+<td>img_url</td>
+<td>课程图片地址，测试地址可以使用占位图片：/upload/201809191145158376.jpg</td>
+</tr>
+<tr>
+<td>market_price</td>
+<td>市场价</td>
+</tr>
+<tr>
+<td>sell_price</td>
+<td>销售价</td>
+</tr>
+<tr>
+<td>lesson_level_id</td>
+<td>课程难度等级id ：  2：初级 3：中级 4：高级</td>
+</tr>
+<tr>
+<td>lesson_level</td>
+<td>课程难度等级文字，初级，中级，高级</td>
+</tr>
+<tr>
+<td>lesson_star</td>
+<td>课程评分，0-5分</td>
+</tr>
+<tr>
+<td>leson_type</td>
+<td>播放模式，暂时固定写成：录播，界面无需传值</td>
+</tr>
+<tr>
+<td>content</td>
+<td>课程详情</td>
+</tr>
+<tr>
+<td>common_question</td>
+<td>常见问题</td>
+</tr>
+<tr>
+<td>timeout</td>
+<td>课程有效服务周期，单位:月</td>
+</tr>
+<tr>
+<td>is_top</td>
+<td>1：精品课程  0：普通课程</td>
+</tr>
+<tr>
+<td>is_hot</td>
+<td>1：热门课程  0：普通课程</td>
+</tr>
+<tr>
+<td>is_slide</td>
+<td>1：进入首页轮播  0：普通课程</td>
+</tr>
+<tr>
+<td>teacher_img</td>
+<td>讲师头像地址，暂时不需要传，固定写成：/upload/teacherimg.jpg</td>
+</tr>
+<tr>
+<td>teacher_name</td>
+<td>讲师名称，暂时不需要传，固定写成：黑马高级讲师</td>
+</tr>
+<tr>
+<td>teacher_desc</td>
+<td>讲师介绍，暂时不需要传，固定写成：计算机硕士，专注于IT编程领域20年，猎涉多门编程语言，参与多个国家级计算机项目，多年培训经验，丰富的教学讲解经验</td>
+</tr>
+<tr>
+<td>status</td>
+<td>1：删除  0：正常</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<blockquote>
+<p>响应正确时的JSON返回结果：</p>
+</blockquote>
+<pre><code class="lang-json">{
+    &quot;status&quot;: 0,
+    &quot;message&quot;: &quot;新增课程&quot;
+}
+</code></pre>
+<h2 id="-id-">根据id获取课程数据（需登录）</h2>
+<p><a href="http://localhost:9092/ch/admin/getCourseInfoById/:id">http://localhost:9092/ch/admin/getCourseInfoById/:id</a></p>
+<blockquote>
+<p>http请求方式：GET</p>
+</blockquote>
+<blockquote>
+<p>是否需要登录才能访问：是</p>
+</blockquote>
+<blockquote>
+<p>请求url：/ch/admin/getCourseInfoById/:id</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>请求示例：<a href="http://157.122.54.189:9092/ch/admin/getCourseInfoById/:id">http://157.122.54.189:9092/ch/admin/getCourseInfoById/:id</a></p>
+</blockquote>
+<hr>
+<blockquote>
+<p>请求参数：</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>参数名称</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>id</td>
+<td>课程id</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<blockquote>
+<p>响应JSON返回结果：</p>
+</blockquote>
+<pre><code class="lang-json">{
+    &quot;status&quot;: 0,
+    &quot;message&quot;: [
+        {
+            &quot;id&quot;: 102, /*课程id*/
+            &quot;category_id_top&quot;: 40, /*课程顶级分类*/
+            &quot;category_id&quot;: 56,/*课程所在分类*/
+            &quot;title&quot;: &quot;【前端】Vue实现移动商城购物网站项目&quot;,/*课程标题*/
+            &quot;sub_title&quot;: &quot;Vue+Vuex+vue-resource+webpack技术栈&quot;,/*课程简述*/
+            &quot;img_url&quot;: &quot;/upload/201809/17/201809171437171126.jpg&quot;,/*课程图片*/
+            &quot;market_price&quot;: 899,/*课程市场价*/
+            &quot;sell_price&quot;: 399,/*课程销售价*/
+            &quot;lesson_level_id&quot;: 2,/*课程难度等级：2:初级 3：中级 4：高级*/
+            &quot;lesson_level&quot;: &quot;初级&quot;,/*课程难度等级文字*/
+            &quot;lesson_time&quot;: 0,/*课程时长，单位：分钟*/
+            &quot;lesson_star&quot;: 5,/*课程评分，0-5分*/
+            &quot;leson_type&quot;: &quot;录播模式&quot;,/*课程播放模式*/
+            &quot;tags&quot;: &quot;Vue，Vuex，Webpack&quot;,/*暂无使用*/
+            &quot;content&quot;: &quot;&lt;p&gt;&lt;img src=\&quot;/upload/201809/17/201809171445581503.png\&quot; title=\&quot;vuedesc.png\&quot; alt=\&quot;vuedesc.png\&quot; width=\&quot;820\&quot; height=\&quot;4949\&quot;/&gt;&lt;/p&gt;&quot;, /*课程详情*/
+            &quot;common_question&quot;: &quot;&lt;p&gt;&lt;span style=\&quot;color: rgb(0, 112, 192);\&quot;&gt;&lt;strong&gt;1、Vue 是什么？&lt;/strong&gt;&lt;/span&gt;&quot;,/*课程常见问题*/
+            &quot;count&quot;: 1000,/*课程视频数量，暂无使用*/
+            &quot;timeout&quot;: 12,/*课程服务周期，单位：月*/
+            &quot;is_top&quot;: 1,/*精品课程*/
+            &quot;is_hot&quot;: 0,/*热门课程*/
+            &quot;is_slide&quot;: 1,/*课程进入首页轮播*/
+            &quot;sort_id&quot;: 99,/*排序号，暂无使用*/
+            &quot;click&quot;: 1209,/*学习人数*/
+            &quot;status&quot;: 0,/* 0：正常 1：删除*/
+            &quot;user_id&quot;: 1,/*新增课程用户id*/
+            &quot;user_name&quot;: &quot;18888888888&quot;, /*新增课程的用户名称*/
+            &quot;add_time&quot;: &quot;2018-09-17T06:36:08.000Z&quot;,/*新增课程时间*/
+            &quot;update_time&quot;: &quot;2018-09-17T07:24:34.000Z&quot;, /*最后修改课程时间*/
+            &quot;teacher_img&quot;: &quot;/upload/teacherimg.jpg&quot;, /*讲师头像*/
+            &quot;teacher_name&quot;: &quot;黑马高级讲师&quot;,/*讲师名称*/
+            &quot;teacher_desc&quot;: &quot;计算机硕士，专注于IT编程领域20年，猎涉多门编程语言，参与多个国家级计算机项目，多年培训经验，丰富的教学讲解经验&quot;/*讲师介绍*/
+        }
+    ]
+}
+</code></pre>
+<h2 id="-">编辑课程（需登录）</h2>
+<p><a href="http://localhost:9092/ch/admin/editCourseInfo">http://localhost:9092/ch/admin/editCourseInfo</a></p>
+<blockquote>
+<p>http请求方式：POST</p>
+</blockquote>
+<blockquote>
+<p>是否需要登录才能访问：是</p>
+</blockquote>
+<blockquote>
+<p>请求url：/ch/admin/editCourseInfo</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>请求示例：<a href="http://157.122.54.189:9092/ch/admin/editCourseInfo">http://157.122.54.189:9092/ch/admin/editCourseInfo</a></p>
+</blockquote>
+<hr>
+<blockquote>
+<p>请求参数：</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>参数名称</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>id</td>
+<td>要更新的课程id</td>
+</tr>
+<tr>
+<td>category_id</td>
+<td>课程所属分类</td>
+</tr>
+<tr>
+<td>title</td>
+<td>课程标题</td>
+</tr>
+<tr>
+<td>sub_title</td>
+<td>课程简述</td>
+</tr>
+<tr>
+<td>img_url</td>
+<td>课程图片地址</td>
+</tr>
+<tr>
+<td>market_price</td>
+<td>市场价</td>
+</tr>
+<tr>
+<td>sell_price</td>
+<td>销售价</td>
+</tr>
+<tr>
+<td>lesson_level_id</td>
+<td>课程难度等级id ：  2：初级 3：中级 4：高级</td>
+</tr>
+<tr>
+<td>lesson_level</td>
+<td>课程难度等级文字，初级，中级，高级</td>
+</tr>
+<tr>
+<td>lesson_star</td>
+<td>课程评分，0-5分</td>
+</tr>
+<tr>
+<td>leson_type</td>
+<td>播放模式，暂时固定写成：录播，界面无需传值</td>
+</tr>
+<tr>
+<td>content</td>
+<td>课程详情</td>
+</tr>
+<tr>
+<td>common_question</td>
+<td>常见问题</td>
+</tr>
+<tr>
+<td>timeout</td>
+<td>课程有效服务周期，单位:月</td>
+</tr>
+<tr>
+<td>is_top</td>
+<td>1：精品课程  0：普通课程</td>
+</tr>
+<tr>
+<td>is_hot</td>
+<td>1：热门课程  0：普通课程</td>
+</tr>
+<tr>
+<td>is_slide</td>
+<td>1：进入首页轮播  0：普通课程</td>
+</tr>
+<tr>
+<td>teacher_img</td>
+<td>讲师头像地址，暂时不需要传，固定写成：/upload/teacherimg.jpg</td>
+</tr>
+<tr>
+<td>teacher_name</td>
+<td>讲师名称，暂时不需要传，固定写成：黑马高级讲师</td>
+</tr>
+<tr>
+<td>teacher_desc</td>
+<td>讲师介绍，暂时不需要传，固定写成：计算机硕士，专注于IT编程领域20年，猎涉多门编程语言，参与多个国家级计算机项目，多年培训经验，丰富的教学讲解经验</td>
+</tr>
+<tr>
+<td>status</td>
+<td>1：删除  0：正常</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<blockquote>
+<p>响应正确时的JSON返回结果：</p>
+</blockquote>
+<pre><code class="lang-json">{
+    &quot;status&quot;: 0,
+    &quot;message&quot;: &quot;修改课程成功&quot;
+}
+</code></pre>
+<h1 id="-">管理端-课程分类维护</h1>
+<h2 id="-">获取课程分类列表数据（需登录）</h2>
+<blockquote>
+<p>http请求方式：GET</p>
+</blockquote>
+<blockquote>
+<p>是否需要登录才能访问：是</p>
+</blockquote>
+<blockquote>
+<p>请求url：/ch/admin/getcatelist</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>请求示例：<a href="http://157.122.54.189:9092/ch/admin/getcatelist">http://157.122.54.189:9092/ch/admin/getcatelist</a></p>
+</blockquote>
+<hr>
+<blockquote>
+<p>请求参数：无</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>响应JSON返回结果：</p>
+</blockquote>
+<pre><code class="lang-json">{
+    &quot;status&quot;: 0,
+    &quot;message&quot;: [
+        {
+            &quot;id&quot;: 40,
+            &quot;channel_id&quot;: 2,
+            &quot;title&quot;: &quot;前端与移动开发&quot;,
+            &quot;parent_id&quot;: 0,
+            &quot;class_list&quot;: &quot;,40,&quot;,
+            &quot;class_layer&quot;: 1,
+            &quot;sort_id&quot;: 99,
+            &quot;img1_url&quot;: &quot;/upload/python.png&quot;,
+            &quot;img_url&quot;: &quot;/upload/qd.png&quot;,
+            &quot;content&quot;: null
+        }
+    ]
+}
+</code></pre>
+<blockquote>
+<p>响应参数说明</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>参数名称</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>id</td>
+<td>课程分类编号值</td>
+</tr>
+<tr>
+<td>title</td>
+<td>课程分类名称</td>
+</tr>
+<tr>
+<td>parent_id</td>
+<td>所属父分类</td>
+</tr>
+<tr>
+<td>class_list</td>
+<td>固定字符串： 格式为：,顶级分类id,二级分类,......,当前分类id,</td>
+</tr>
+<tr>
+<td>class_layer</td>
+<td>当前分类所属层级</td>
+</tr>
+<tr>
+<td>sort_id</td>
+<td>排序号</td>
+</tr>
+<tr>
+<td>img1_url</td>
+<td>分类课程上方banner图片</td>
+</tr>
+<tr>
+<td>img_url</td>
+<td>分类左边图片</td>
+</tr>
+<tr>
+<td>content</td>
+<td>分类描述，暂时没有启用</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>业务调用处：</p>
+</blockquote>
+<p><img src="img\pa27.png" alt="pa27"></p>
+<h2 id="-id-">根据ID获取课程分类数据(需登录)</h2>
+<blockquote>
+<p>http请求方式：GET</p>
+</blockquote>
+<blockquote>
+<p>是否需要登录才能访问：是</p>
+</blockquote>
+<blockquote>
+<p>请求url：/ch/admin/getcateinfoById/参数1</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>请求示例：<a href="http://157.122.54.189:9092/ch/admin/getcateinfoById/参数1">http://157.122.54.189:9092/ch/admin/getcateinfoById/参数1</a></p>
+</blockquote>
+<hr>
+<blockquote>
+<p>请求参数：</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>参数名称</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>参数1</td>
+<td>分类id值</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<blockquote>
+<p>响应JSON返回结果：</p>
+</blockquote>
+<pre><code class="lang-json">{
+    &quot;status&quot;: 0,
+    &quot;message&quot;: [
+        {
+            &quot;id&quot;: 56,
+            &quot;channel_id&quot;: 2,
+            &quot;title&quot;: &quot;Vue.js&quot;,
+            &quot;parent_id&quot;: 43,
+            &quot;class_list&quot;: &quot;,40,43,56,&quot;,
+            &quot;class_layer&quot;: 3,
+            &quot;sort_id&quot;: 99,
+            &quot;img1_url&quot;: &quot;&quot;,
+            &quot;img_url&quot;: &quot;&quot;,
+            &quot;content&quot;: null
+        }
+    ]
+}
+</code></pre>
+<p>响应参数说明同  获取课程分类列表数据</p>
+<h2 id="-">添加课程分类数据（需登录）</h2>
+<blockquote>
+<p>http请求方式：POST</p>
+</blockquote>
+<blockquote>
+<p>是否需要登录才能访问：是</p>
+</blockquote>
+<blockquote>
+<p>请求url：/ch/admin/addcateinfo</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>请求示例：<a href="http://157.122.54.189:9092/ch/admin/addcateinfo">http://157.122.54.189:9092/ch/admin/addcateinfo</a></p>
+</blockquote>
+<hr>
+<blockquote>
+<p>请求参数：</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>参数名称</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>title</td>
+<td>分类标题</td>
+</tr>
+<tr>
+<td>parent_id</td>
+<td>所属父分类id</td>
+</tr>
+<tr>
+<td>sort_id</td>
+<td>排序号</td>
+</tr>
+<tr>
+<td>img1_url</td>
+<td>banner图片地址</td>
+</tr>
+<tr>
+<td>img_url</td>
+<td>分类说明图片</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<blockquote>
+<p>响应正确时的JSON返回结果：</p>
+</blockquote>
+<pre><code class="lang-json">{
+    &quot;status&quot;: 0,
+    &quot;message&quot;: &quot;分类数据保存成功&quot;
+}
+</code></pre>
+<h2 id="-">编辑课程分类数据（需登录）</h2>
+<blockquote>
+<p>http请求方式：POST</p>
+</blockquote>
+<blockquote>
+<p>是否需要登录才能访问：是</p>
+</blockquote>
+<blockquote>
+<p>请求url：/ch/admin/editcateinfo</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>请求示例：<a href="http://157.122.54.189:9092/ch/admin/editcateinfo">http://157.122.54.189:9092/ch/admin/editcateinfo</a></p>
+</blockquote>
+<hr>
+<blockquote>
+<p>请求参数：</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>参数名称</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>id</td>
+<td>要编辑分类数据的id值</td>
+</tr>
+<tr>
+<td>title</td>
+<td>分类标题</td>
+</tr>
+<tr>
+<td>parent_id</td>
+<td>所属父分类id</td>
+</tr>
+<tr>
+<td>sort_id</td>
+<td>排序号</td>
+</tr>
+<tr>
+<td>img1_url</td>
+<td>banner图片地址</td>
+</tr>
+<tr>
+<td>img_url</td>
+<td>分类说明图片</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<blockquote>
+<p>响应正确时的JSON返回结果：</p>
+</blockquote>
+<pre><code class="lang-json">{
+    &quot;status&quot;: 0,
+    &quot;message&quot;: &quot;分类数据修改成功&quot;
+}
+</code></pre>
+<h2 id="-id-">根据ID删除课程分类数据（需登录）</h2>
+<blockquote>
+<p>http请求方式：GET</p>
+</blockquote>
+<blockquote>
+<p>是否需要登录才能访问：是</p>
+</blockquote>
+<blockquote>
+<p>请求url： /ch/admin/delcateinfo/:ids</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>请求示例：<a href="http://157.122.54.189:9092/ch/admin/delcateinfo/:ids">http://157.122.54.189:9092/ch/admin/delcateinfo/:ids</a></p>
+</blockquote>
+<hr>
+<blockquote>
+<p>请求参数：</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>参数名称</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ids</td>
+<td>要删除的分类id，多个使用逗号分隔，例如：1,2,3</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<blockquote>
+<p>响应JSON返回结果：</p>
+</blockquote>
+<pre><code class="lang-json">{
+    &quot;status&quot;: 0,
+    &quot;message&quot;: &quot;分类数据删除成功&quot;
+}
+</code></pre>
+<h1 id="-">管理端-课程大纲维护</h1>
+<h2 id="-">获取课程大纲列表数据（需登录）</h2>
+<blockquote>
+<p>http请求方式：GET</p>
+</blockquote>
+<blockquote>
+<p>是否需要登录才能访问：是</p>
+</blockquote>
+<blockquote>
+<p>请求url：/ch/admin/getsectionlist/参数1</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>请求示例：<a href="http://157.122.54.189:9092/ch/admin/getsectionlist/102">http://157.122.54.189:9092/ch/admin/getsectionlist/102</a></p>
+</blockquote>
+<hr>
+<blockquote>
+<p>请求参数：</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>参数名称</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>参数1</td>
+<td>传入课程id值</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<blockquote>
+<p>响应JSON返回结果：</p>
+</blockquote>
+<pre><code class="lang-json">{
+    &quot;status&quot;: 0,
+    &quot;message&quot;: [
+        {
+            &quot;id&quot;: 2,
+            &quot;goods_id&quot;: 102,
+            &quot;parent_id&quot;: 0,
+            &quot;section_sortid&quot;: 1,
+            &quot;section_name&quot;: &quot;第一章：Vue基础&quot;,
+            &quot;is_free&quot;: 1,
+            &quot;video_path&quot;: &quot;&quot;,
+            &quot;video_time&quot;: 13.5,
+            &quot;code_path&quot;: &quot;&quot;,
+            &quot;notes_path&quot;: &quot;&quot;,
+            &quot;add_time&quot;: &quot;2018-09-19T07:45:50.000Z&quot;,
+            &quot;class_list&quot;: &quot;,2,&quot;,
+            &quot;class_layer&quot;: &quot;1&quot;
+        },
+        {
+            &quot;id&quot;: 3,
+            &quot;goods_id&quot;: 102,
+            &quot;parent_id&quot;: 2,
+            &quot;section_sortid&quot;: 1,
+            &quot;section_name&quot;: &quot;1-vue指令&quot;,
+            &quot;is_free&quot;: 1,
+            &quot;video_path&quot;: &quot;http://157.122.54.189:9092/upload/201809/19/201809191620139216.mp4&quot;,
+            &quot;video_time&quot;: 8.5,
+            &quot;code_path&quot;: &quot;http://157.122.54.189:9092/upload/201809/19/testvuecli.rar&quot;,
+            &quot;notes_path&quot;: &quot;http://157.122.54.189:9092/upload/201809/19/jy.rar&quot;,
+            &quot;add_time&quot;: &quot;2018-09-19T07:47:38.000Z&quot;,
+            &quot;class_list&quot;: &quot;,2,3,&quot;,
+            &quot;class_layer&quot;: &quot;2&quot;
+        }
+    ]
+}
+</code></pre>
+<blockquote>
+<p>响应参数说明</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>参数名称</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>id</td>
+<td>课程大纲编号值</td>
+</tr>
+<tr>
+<td>goods_id</td>
+<td>所属课程</td>
+</tr>
+<tr>
+<td>parent_id</td>
+<td>所属父大纲</td>
+</tr>
+<tr>
+<td>class_list</td>
+<td>固定字符串： 格式为：,顶级大纲id,二级大纲id,......,当前大纲id,</td>
+</tr>
+<tr>
+<td>class_layer</td>
+<td>当前大纲所属层级</td>
+</tr>
+<tr>
+<td>section_sortid</td>
+<td>排序号</td>
+</tr>
+<tr>
+<td>section_name</td>
+<td>大纲名称</td>
+</tr>
+<tr>
+<td>is_free</td>
+<td>1：免费  0：收费</td>
+</tr>
+<tr>
+<td>video_path</td>
+<td>当前大纲对应的视频</td>
+</tr>
+<tr>
+<td>video_time</td>
+<td>视频长度</td>
+</tr>
+<tr>
+<td>code_path</td>
+<td>当前大纲对应的代码</td>
+</tr>
+<tr>
+<td>notes_path</td>
+<td>当前大纲对应的讲义</td>
+</tr>
+<tr>
+<td>add_time</td>
+<td>添加时间</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>业务调用处：</p>
+</blockquote>
+<p><img src="img\pa28.png" alt="pa28"></p>
+<h2 id="-id-">根据ID获取课程大纲数据(需登录)</h2>
+<blockquote>
+<p>http请求方式：GET</p>
+</blockquote>
+<blockquote>
+<p>是否需要登录才能访问：是</p>
+</blockquote>
+<blockquote>
+<p>请求url：/ch/admin/getsectioninfoById/参数1</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>请求示例：<a href="http://157.122.54.189:9092/ch/admin/getsectioninfoById/3">http://157.122.54.189:9092/ch/admin/getsectioninfoById/3</a></p>
+</blockquote>
+<hr>
+<blockquote>
+<p>请求参数：</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>参数名称</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>参数1</td>
+<td>大纲id值</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<blockquote>
+<p>响应JSON返回结果：</p>
+</blockquote>
+<pre><code class="lang-json">{
+    &quot;status&quot;: 0,
+    &quot;message&quot;: [
+        {
+            &quot;id&quot;: 3,
+            &quot;goods_id&quot;: 102,
+            &quot;parent_id&quot;: 2,
+            &quot;section_sortid&quot;: 1,
+            &quot;section_name&quot;: &quot;1-vue指令&quot;,
+            &quot;is_free&quot;: 1,
+            &quot;video_path&quot;: &quot;http://157.122.54.189:9092/upload/201809/19/201809191620139216.mp4&quot;,
+            &quot;short_video_path&quot;: &quot;/upload/201809/19/201809191620139216.mp4&quot;,
+            &quot;video_time&quot;: 8.5,
+            &quot;code_path&quot;: &quot;http://157.122.54.189:9092/upload/201809/19/testvuecli.rar&quot;,
+            &quot;short_code_path&quot;: &quot;/upload/201809/19/testvuecli.rar&quot;,
+            &quot;notes_path&quot;: &quot;http://157.122.54.189:9092/upload/201809/19/jy.rar&quot;,
+            &quot;short_notes_path&quot;: &quot;/upload/201809/19/jy.rar&quot;,
+            &quot;add_time&quot;: &quot;2018-09-19T07:47:38.000Z&quot;,
+            &quot;class_list&quot;: &quot;,2,3,&quot;,
+            &quot;class_layer&quot;: &quot;2&quot;
+        }
+    ]
+}
+</code></pre>
+<p>响应参数说明同  获取课程大纲列表数据</p>
+<h2 id="-">添加课程大纲数据（需登录）</h2>
+<blockquote>
+<p>http请求方式：POST</p>
+</blockquote>
+<blockquote>
+<p>是否需要登录才能访问：是</p>
+</blockquote>
+<blockquote>
+<p>请求url：/ch/admin/addsectioninfo</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>请求示例：<a href="http://157.122.54.189:9092/ch/admin/addsectioninfo">http://157.122.54.189:9092/ch/admin/addsectioninfo</a></p>
+</blockquote>
+<hr>
+<blockquote>
+<p>请求参数： </p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>参数名称</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>goods_id</td>
+<td>课程id，代表当前大纲是属于哪个课程的</td>
+</tr>
+<tr>
+<td>section_name</td>
+<td>大纲名称</td>
+</tr>
+<tr>
+<td>parent_id</td>
+<td>父大纲id</td>
+</tr>
+<tr>
+<td>section_sortid</td>
+<td>排序号</td>
+</tr>
+<tr>
+<td>is_free</td>
+<td>1：免费  0：收费</td>
+</tr>
+<tr>
+<td>video_path</td>
+<td>本大纲对应的视频地址</td>
+</tr>
+<tr>
+<td>video_time</td>
+<td>视频时长，单位：分钟</td>
+</tr>
+<tr>
+<td>code_path</td>
+<td>本大纲对应的代码附件地址</td>
+</tr>
+<tr>
+<td>notes_path</td>
+<td>本大纲对应的讲义附件地址</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<blockquote>
+<p>响应正确时的JSON返回结果：</p>
+</blockquote>
+<pre><code class="lang-json">{
+    &quot;status&quot;: 0,
+    &quot;message&quot;: &quot;大纲数据保存成功&quot;
+}
+</code></pre>
+<h2 id="-">编辑课程大纲数据（需登录）</h2>
+<blockquote>
+<p>http请求方式：POST</p>
+</blockquote>
+<blockquote>
+<p>是否需要登录才能访问：是</p>
+</blockquote>
+<blockquote>
+<p>请求url：/ch/admin/editsectioninfo</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>请求示例：<a href="http://157.122.54.189:9092/ch/admin/editsectioninfo">http://157.122.54.189:9092/ch/admin/editsectioninfo</a></p>
+</blockquote>
+<hr>
+<blockquote>
+<p>请求参数：</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>参数名称</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>id</td>
+<td>要修改的大纲id</td>
+</tr>
+<tr>
+<td>section_name</td>
+<td>大纲名称</td>
+</tr>
+<tr>
+<td>parent_id</td>
+<td>父大纲id</td>
+</tr>
+<tr>
+<td>section_sortid</td>
+<td>排序号</td>
+</tr>
+<tr>
+<td>is_free</td>
+<td>1：免费  0：收费</td>
+</tr>
+<tr>
+<td>video_path</td>
+<td>本大纲对应的视频地址</td>
+</tr>
+<tr>
+<td>video_time</td>
+<td>视频时长，单位：分钟</td>
+</tr>
+<tr>
+<td>code_path</td>
+<td>本大纲对应的代码附件地址</td>
+</tr>
+<tr>
+<td>notes_path</td>
+<td>本大纲对应的讲义附件地址</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<blockquote>
+<p>响应正确时的JSON返回结果：</p>
+</blockquote>
+<pre><code class="lang-json">{
+    &quot;status&quot;: 0,
+    &quot;message&quot;: &quot;大纲数据修改成功&quot;
+}
+</code></pre>
+<h2 id="-id-">根据ID删除课程大纲数据（需登录）</h2>
+<blockquote>
+<p>http请求方式：GET</p>
+</blockquote>
+<blockquote>
+<p>是否需要登录才能访问：是</p>
+</blockquote>
+<blockquote>
+<p>请求url： /ch/admin/delsectioninfo/参数1</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>请求示例：<a href="http://157.122.54.189:9092/ch/admin/delsectioninfo/1,2">http://157.122.54.189:9092/ch/admin/delsectioninfo/1,2</a></p>
+</blockquote>
+<hr>
+<blockquote>
+<p>请求参数：</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>参数名称</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>参数1</td>
+<td>要删除的大纲id，多个使用逗号分隔，例如：1,2,3</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<blockquote>
+<p>响应JSON返回结果：</p>
+</blockquote>
+<pre><code class="lang-json">{
+    &quot;status&quot;: 0,
+    &quot;message&quot;:&quot;大纲数据删除成功&quot;
+}
+</code></pre>
+<h1 id="-">管理端-订单维护</h1>
+<h2 id="-">分页获取订单列表数据（需登录）</h2>
+<blockquote>
+<p>http请求方式：GET</p>
+</blockquote>
+<blockquote>
+<p>请求url：/ch/admin/getmyorderlistByPage?orderstatus=-1&amp;pageIndex=页码&amp;pageSize=单页容量</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>请求示例：<a href="http://157.122.54.189:9092/ch/admin/getmyorderlistByPage?orderstatus=-1&amp;pageIndex=1&amp;pageSize=10">http://157.122.54.189:9092/ch/admin/getmyorderlistByPage?orderstatus=-1&amp;pageIndex=1&amp;pageSize=10</a></p>
+</blockquote>
+<pre><code> 注意：请求示例可以使用 用户： 18888888888 密码：123456 登录后获取已有数据
+</code></pre><hr>
+<blockquote>
+<p>请求参数：</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>参数名称</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>orderstatus</td>
+<td>订单状态 -1：全部订单  0：待付款订单  1：已完成订单  2：取消的订单</td>
+</tr>
+<tr>
+<td>pageIndex</td>
+<td>页码，最小值为1</td>
+</tr>
+<tr>
+<td>pageSize</td>
+<td>单页容量，默认是10</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<blockquote>
+<p>响应正确时的JSON返回结果：</p>
+</blockquote>
+<pre><code class="lang-json">{
+    &quot;status&quot;: 0,
+    &quot;message&quot;: [
+        {
+            &quot;id&quot;: 21,
+            &quot;order_no&quot;: &quot;BD2018101301829505&quot;,
+            &quot;user_id&quot;: 1,
+            &quot;user_name&quot;: &quot;18888888888&quot;,
+            &quot;payment_id&quot;: 1,
+            &quot;payment_Name&quot;: &quot;微信支付&quot;,
+            &quot;payable_amount&quot;: 398,
+            &quot;real_amount&quot;: 0,
+            &quot;status&quot;: 0,
+            &quot;status_Name&quot;: &quot;待付款&quot;,
+            &quot;add_time&quot;: &quot;2018-10-12T16:18:29.000Z&quot;,
+            &quot;complete_time&quot;: null
+        }
+    ],
+    &quot;totalCount&quot;: 2,
+    &quot;pageIndex&quot;: 1,
+    &quot;pageSize&quot;: 1
+}
+</code></pre>
+<blockquote>
+<p>响应参数说明</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>参数名称</th>
+<th>参数说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>id</td>
+<td>订单数据编号</td>
+</tr>
+<tr>
+<td>order_no</td>
+<td>订单号</td>
+</tr>
+<tr>
+<td>user_id</td>
+<td>下单用户id</td>
+</tr>
+<tr>
+<td>user_name</td>
+<td>下单用户名称</td>
+</tr>
+<tr>
+<td>payment_id</td>
+<td>1：微信支付  2：支付宝支付</td>
+</tr>
+<tr>
+<td>payment_Name</td>
+<td>支付文字显示</td>
+</tr>
+<tr>
+<td>payable_amount</td>
+<td>订单应付金额</td>
+</tr>
+<tr>
+<td>real_amount</td>
+<td>订单实付金额（通过支付接口已经完成支付才会有值，只下单未支付值是0）</td>
+</tr>
+<tr>
+<td>status</td>
+<td>订单状态，0：待付款   1：已完成  2：已取消</td>
+</tr>
+<tr>
+<td>status_Name</td>
+<td>订单状态文字</td>
+</tr>
+<tr>
+<td>add_time</td>
+<td>下单时间</td>
+</tr>
+<tr>
+<td>complete_time</td>
+<td>支付完成时间（通过支付接口已经完成支付才会修改，只下单未支付值是NLL）</td>
+</tr>
+<tr>
+<td>totalCount</td>
+<td>符合条件的课程总数量</td>
+</tr>
+<tr>
+<td>pageIndex</td>
+<td>当前请求的页码</td>
+</tr>
+<tr>
+<td>pageSize</td>
+<td>当前请求的单页容量</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>业务调用处：</p>
+</blockquote>
+<p><img src="img\pa29.png" alt="pa29"></p>
+<h2 id="-id-">根据ID获取订单详情数据（需登录）</h2>
+<blockquote>
+<p>http请求方式：GET</p>
+</blockquote>
+<blockquote>
+<p>是否需要登录才能访问：是</p>
+</blockquote>
+<blockquote>
+<p>请求url：/ch/admin/getorderInfoById/参数1</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>请求示例：<a href="http://157.122.54.189:9092/ch/admin/getorderInfoById/21">http://157.122.54.189:9092/ch/admin/getorderInfoById/21</a></p>
+</blockquote>
+<hr>
+<blockquote>
+<p>请求参数：</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>参数名称</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>参数1</td>
+<td>订单id值</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<blockquote>
+<p>响应JSON返回结果：</p>
+</blockquote>
+<pre><code class="lang-json">{
+    &quot;status&quot;: 0,
+    &quot;message&quot;: {
+        &quot;orderInfo&quot;: {
+            &quot;id&quot;: 21,
+            &quot;order_no&quot;: &quot;BD2018101301829505&quot;,
+            &quot;user_id&quot;: 1,
+            &quot;user_name&quot;: &quot;18888888888&quot;,
+            &quot;payable_amount&quot;: 398,
+            &quot;add_time&quot;: &quot;2018-10-12T16:18:29.000Z&quot;,
+            &quot;complete_time&quot;: null,
+            &quot;status&quot;: 0,
+            &quot;remark&quot;: &quot;【前端】Vue实现移动商城购物网站项目   原价：￥399 &lt;br /&gt; 【前端】快应用实战开发 - 快速上手   原价：￥0 &lt;br /&gt; &quot;
+        },
+        &quot;goodslist&quot;: [
+            {
+                &quot;id&quot;: 15,
+                &quot;goods_title&quot;: &quot;【前端】Vue实现移动商城购物网站项目&quot;,
+                &quot;img_url&quot;: &quot;http://157.122.54.189:9092/upload/201809/17/201809171437171126.jpg&quot;,
+                &quot;goods_sell_price&quot;: 899,
+                &quot;begin_time&quot;: &quot;2018-10-12T16:18:29.000Z&quot;,
+                &quot;eng_time&quot;: &quot;2019-10-12T16:18:29.000Z&quot;
+            },
+            {
+                &quot;id&quot;: 16,
+                &quot;goods_title&quot;: &quot;【前端】快应用实战开发 - 快速上手&quot;,
+                &quot;img_url&quot;: &quot;http://157.122.54.189:9092/upload/201809/19/201809191054524297.jpg&quot;,
+                &quot;goods_sell_price&quot;: 0,
+                &quot;begin_time&quot;: &quot;2018-10-12T16:18:29.000Z&quot;,
+                &quot;eng_time&quot;: &quot;2019-10-12T16:18:29.000Z&quot;
+            }
+        ]
+    }
+}
+</code></pre>
+<blockquote>
+<p>响应参数说明：</p>
+</blockquote>
+<p>orderInfo对象参数说明同“分页获取订单列表数据”相同</p>
+<p>goodslist数组中对象参数说明：</p>
+<table>
+<thead>
+<tr>
+<th>参数名称</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>id</td>
+<td>编号</td>
+</tr>
+<tr>
+<td>goods_title</td>
+<td>课程名称</td>
+</tr>
+<tr>
+<td>img_url</td>
+<td>课程图片</td>
+</tr>
+<tr>
+<td>goods_sell_price</td>
+<td>课程销售价</td>
+</tr>
+<tr>
+<td>begin_time</td>
+<td>当前订单中，该课程的有效开始时间</td>
+</tr>
+<tr>
+<td>eng_time</td>
+<td>当前订单中，该课程的有效结束时间</td>
+</tr>
+</tbody>
+</table>
+<h1 id="-api">通用API</h1>
+<h2 id="-">上传图片（无需登录）</h2>
+<blockquote>
+<p>http请求方式：POST</p>
+</blockquote>
+<blockquote>
+<p>请求url：  /nc/admin/uploadimg</p>
+</blockquote>
+<blockquote>
+<p>请求url示例：<a href="http://157.122.54.189:9092/nc/admin/uploadimg">http://157.122.54.189:9092/nc/admin/uploadimg</a></p>
+</blockquote>
+<hr>
+<blockquote>
+<p>请求报文头Content-Type格式设置为：
+Content-Type:multipart/form-data;</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>响应正确时的JSON返回结果：</p>
+</blockquote>
+<pre><code class="lang-json">{
+    &quot;status&quot;: 0,
+    &quot;message&quot;: [
+        {
+            &quot;name&quot;: &quot;p3.png&quot;,
+            &quot;url&quot;: &quot;http://157.122.54.189:9092/upload/imgs/fHTIYaApbtBk6iuV9MDWk84D.png&quot;,
+            &quot;img_url&quot;: &quot;/upload/imgs/fHTIYaApbtBk6iuV9MDWk84D.png&quot;
+        },
+        {
+            &quot;name&quot;: &quot;p2.png&quot;,
+            &quot;url&quot;: &quot;http://157.122.54.189:9092/upload/imgs/pXlQ5CaAj5DES8fuyImd60VY.png&quot;,
+            &quot;img_url&quot;: &quot;/upload/imgs/pXlQ5CaAj5DES8fuyImd60VY.png&quot;
+        }
+    ]
+}
+</code></pre>
+<blockquote>
+<p>响应参数说明</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>参数名称</th>
+<th>参数说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>name</td>
+<td>图片名称</td>
+</tr>
+<tr>
+<td>url</td>
+<td>带有域名的完整的图片访问url</td>
+</tr>
+<tr>
+<td>img_url</td>
+<td>图片在服务器上存储的位置，post给服务器的时候是用这个值</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<blockquote>
+<p>响应错误时，数据服务会返回错误码1和错误信息，例如：</p>
+</blockquote>
+<pre><code class="lang-json">{
+  &quot;status&quot;:1,
+  &quot;message&quot;:&quot;异常信息&quot;
+}
+</code></pre>
+<hr>
+<h2 id="-">上传附件（无需登录）</h2>
+<blockquote>
+<p>http请求方式：POST</p>
+</blockquote>
+<blockquote>
+<p>请求url： /nc/admin/uploadfile</p>
+</blockquote>
+<blockquote>
+<p>请求url示例：<a href="http://157.122.54.189:9092/nc/admin/uploadfile">http://157.122.54.189:9092/nc/admin/uploadfile</a></p>
+</blockquote>
+<hr>
+<blockquote>
+<p>请求报文头Content-Type格式设置为:  Content-Type:multipart/form-data</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>响应正确时的JSON返回结果：</p>
+</blockquote>
+<pre><code class="lang-json">{
+    &quot;status&quot;: 0,
+    &quot;message&quot;: [
+        {
+            &quot;name&quot;: &quot;p3.zip&quot;,
+            &quot;url&quot;: &quot;http://157.122.54.189:9092/upload/attaches/UYTN088utYECIC52iY7b6qcV.zip&quot;,
+            &quot;path&quot;: &quot;/upload/attaches/UYTN088utYECIC52iY7b6qcV.zip&quot;,
+            &quot;size&quot;: 299580
+        },
+        {
+            &quot;name&quot;: &quot;p2.zip&quot;,
+            &quot;url&quot;: &quot;http://157.122.54.189:9092/upload/attaches/SM1OJ2ogk2OGIjE-PgjkSk5Q.zip&quot;,
+            &quot;path&quot;: &quot;/upload/attaches/SM1OJ2ogk2OGIjE-PgjkSk5Q.zip&quot;,
+            &quot;size&quot;: 213767
+        }
+    ]
+}
+</code></pre>
+<blockquote>
+<p>响应参数说明</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>参数名称</th>
+<th>参数说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>name</td>
+<td>附件名称</td>
+</tr>
+<tr>
+<td>url</td>
+<td>带有域名的完整的附件访问url，可以作为下载地址</td>
+</tr>
+<tr>
+<td>path</td>
+<td>附件在服务器上存储的位置,此值通常会post给服务器的其他接口，比如新增课程章节时的代码文件</td>
+</tr>
+<tr>
+<td>size</td>
+<td>附件的大小，单位byte , 1K = 1024byte</td>
+</tr>
+</tbody>
+</table>
+
+          	</article>
+        </div>
+		</div>
+  </body>
+</html>
+<script type="text/javascript" src="toc/js/jquery-1.4.4.min.js"></script>
+<script type="text/javascript" src="toc/js/jquery.ztree.all-3.5.min.js"></script>
+<script type="text/javascript" src="toc/js/ztree_toc.js"></script>
+<script type="text/javascript" src="toc_conf.js"></script>
+
+<SCRIPT type="text/javascript" >
+<!--
+$(document).ready(function(){
+    var css_conf = eval(markdown_panel_style);
+    $('#readme').css(css_conf)
+    
+    var conf = eval(jquery_ztree_toc_opts);
+		$('#tree').ztree_toc(conf);
+});
+//-->
+</SCRIPT>

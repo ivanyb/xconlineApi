@@ -1,0 +1,125 @@
+html,body{
+	height: 100%;
+}
+header{
+	height: 110px;
+	line-height: 100px;
+	border-bottom: 1px solid #ddd;
+	overflow: hidden;
+}
+header>a{
+	margin-right: 30px;
+}
+header>.left{
+	font-size: 18px;
+	font-weight: bold;
+}
+header>.left>a{
+	padding: 10px;
+}
+header>.input{
+	width: 304px;
+	height: 34px;
+	border: 2px solid #00A4FF;
+	margin: 35px 30px 0 30px;
+}
+header>.input>input{
+	width: 250px;
+	height: 30px;
+	border: 0;
+	line-height: 30px;
+	padding-left: 10px;
+}
+header>.input>button{
+	width: 50px;
+	height: 30px;
+	line-height: 30px;
+	color: #fff;
+	font-size: 15px;
+	border: 0;
+	background-color: #00A4FF;
+}
+header>.right>a{
+	color: #666;
+	font-size: 14px;
+	margin-left: 25px;
+}
+header>.right>.signout{
+	color: #000
+}
+
+
+.content{
+	height: 100%;
+}
+.left_meau{
+	float: left;
+	width: 250px;
+	height: 100%;
+	background-color: #fff;
+	padding-top: 20px;
+	border-right: 1px solid #ddd;
+	border-left: 1px solid #ddd;
+}
+.left_meau>.photo{
+	width: 80px;
+	height: 80px;
+	margin: 0 auto;
+	cursor: pointer;
+}
+.left_meau>.photo>img{
+	width: 80px;
+	height: 80px;
+	border-radius: 50%;
+
+}
+.left_meau>.photo>.photo_icon{
+	font-size: 18px;
+	bottom: 5px;
+	right: -12px;
+	background-color: #fff;
+	padding: 5px;
+	border-radius: 50%;
+	box-shadow: 0 0 5px #999;
+	color: #466DE2;
+}
+.left_meau>p{
+	text-align: center;
+	font-size: 18px;
+	padding: 0 30px 0;
+	margin-top: 15px;
+	/* 固定写法，用于文字超出省略 */
+	overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+}
+.left_meau>.userinfo{
+	font-size: 14px;
+	color: #999;
+	margin-bottom: 20px;
+}
+.left_meau>ul>li{
+	height: 30px;
+	line-height: 30px;
+	font-size: 16px;
+	padding-left: 40px;
+	margin:10px 0; 
+	border-left: 2px solid #fff; 
+	cursor: pointer;
+	color: #666;
+}
+
+.left_meau li span{
+	float: left;
+	width: 30px;
+	color: inherit;
+	font-size: 20px;
+	margin-right: 20px;
+}
+.left_meau>ul>li.active{
+	border-left: 2px solid #466DE2; 
+	color: #466DE2; 
+};
+

@@ -1,0 +1,174 @@
+.right_aside{
+    width:calc(100% - 250px);
+    float: right;
+    height: 100%;
+    padding-left: 20px;
+}
+.breadCrumbs{
+    height: 48px;
+    line-height: 48px;
+    width: 100%;
+    background: #fff;
+    border-bottom: 1px solid #eee;
+    
+}
+.breadCrumbs img{
+    vertical-align: middle;
+    cursor: pointer;
+}
+.btngroup{
+    padding-top: 20px;
+    height: 55px;
+    width: 100%;
+}
+.btns span{
+    float: left;
+    width: 50px;
+    height: 30px;
+    line-height: 30px;
+    padding-left: 10px;
+    background: #fafafa;
+    position: relative;
+    text-align: center;
+    cursor: pointer;
+    border: 1px solid #eee;
+}
+.btns span i{
+    position: absolute;
+    left:8px;
+}
+.selgroup{
+    height: 30px;
+    line-height: 30px;
+}
+.selgroup div{
+    border: 1px solid #eee;
+    margin-left: 10px;
+    cursor: pointer;
+}
+
+.selgroup span{
+    float: left;
+    width: 70px;
+    text-align: center;
+}
+.selgroup i{
+    float: left;
+    height: 30px;
+    width: 25px;
+    text-align: center;
+    background: #fafafa;
+    border-left: 1px solid #eee;
+}
+.searchbtn div{
+    border: 1px solid #eee;
+}
+.searchbtn .searchbox{
+    width: 150px;
+    height: 30px;
+    line-height: 30px;
+}
+.searchbox i{
+    width: 30px;
+    float: right;
+    text-align: center;
+    background: #fafafa;
+    border-left: 1px solid #eee;
+}
+.searchbtn .listbox{
+    width: 67px;
+    height: 30px;
+    line-height: 30px;
+    margin-left: 10px;
+}
+.listbox i {
+    float: left;
+    width: 32px;
+    text-align: center;
+    background: #fafafa;
+}
+.listbox i:nth-child(2){
+    border-left: 1px solid #eee;
+}
+.classlist{
+    padding-top: 25px;
+    height: 315px;
+    width: 100%;
+}
+.classlist li{
+    width: 250px;
+    height: 100%;
+    height: 315px;
+    border: 1px solid #eee;
+    margin-right: 10px;
+}
+.classlist li:last-child{
+    margin-right: 0;
+}
+.classlist li .classimg{
+    height: 160px;
+    background: green;
+}
+.classimg .ckbox{
+    width: 27px;
+    height: 22px;
+    line-height: 25px;
+    background: #fff;
+    position: absolute;
+    right:0;
+    text-align: center;
+}
+.classimg .ck{
+    
+    width: 15px;
+    height: 15px;
+}
+.classimg .mask{
+    background: rgba(0,0,0, 0.2);
+    height: 68px;
+    width: 100%;
+    padding: 15px 0 0 20px;
+    position: absolute;
+    bottom:0;
+    color:#fff;
+    font-size: 14px;
+}
+.classlist li .classdiir{
+    padding: 10px;
+    color:#666;
+}
+.classdiir .iconlist{
+    padding-top: 10px;
+}
+.iconlist i{
+    float: left;
+    width: 30px;
+    height: 30px;
+    text-align: center;
+    line-height: 30px;
+    color:#d6d6e3;
+    border: 1px solid #e8e8e8;
+}
+.iconlist i:last-child{
+    width: 45px;
+    float: right;
+    color:#000;
+}
+.datebox{
+    padding-left: 10px;
+    height: 40px;
+    line-height: 40px;
+    color:#838383;
+}
+.classlist li:nth-child(1) .classimg{
+    background-image: url('./../images/cxs_bg.jpg');
+}
+.classlist li:nth-child(2) .classimg{
+    background-image: url('./../images/cxs_bg1.jpg');
+}
+.classlist li:nth-child(3) .classimg{
+    background-image: url('./../images/cxs_bg2.jpg');
+}
+.classlist li:nth-child(4) .classimg{
+    background-image: url('./../images/cxs_bg3.jpg');
+}

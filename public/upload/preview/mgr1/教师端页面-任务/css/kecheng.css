@@ -1,0 +1,39 @@
+.kc_content_right {
+  margin-left: 250px;
+  padding: 0 20px;
+  overflow: hidden;
+}
+.kc_content_right img {
+  width: 100%;
+  display: block;
+}
+.kc_content_right div {
+  margin: 10px 0;
+}
+.kc_content_right .mianbaoxue {
+  border-bottom: 1px solid #f1f1f1;
+}
+.kc_content_right .kc_content_btn {
+  height: 30px;
+  line-height: 30px;
+}
+.kc_content_right .kc_content_btn span {
+  display: block;
+  float: left;
+  margin-right: -1px;
+  width: 60px;
+  text-align: center;
+  font-size: 14px;
+  border: 1px solid #f1f1f1;
+  background: #fafafa;
+}
+.kc_content_right .kc_content_btn span.active {
+  background: linear-gradient(#fefefe, #e4e4e4);
+}
+.kc_content_right .kc_content_btn .kc_xuanze {
+  float: left;
+  height: 32px;
+  margin-left: 10px;
+  border: 1px solid #f1f1f1;
+  width: 80px;
+}

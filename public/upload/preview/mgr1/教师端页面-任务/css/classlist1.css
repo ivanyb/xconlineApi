@@ -1,0 +1,67 @@
+.right-content{
+    width: calc(100% - 250px);
+    /* background-color: #66ccff; */
+    height: 100%;
+    float: left;
+    padding: 0 20px;
+}
+.right-content .r-bread{
+    padding: 10px 0;
+    border-bottom: 1px solid #ccc;
+    color: #666;
+    margin-bottom: 20px;
+}
+.r-bread img{
+    height: 14px;
+}
+.note-list .options button{
+    border: 0;
+    outline: 0;
+    float: left;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    border-right: 0;
+    padding: 5px 5px;
+    font-size: 12px;
+}
+.note-list .options button:nth-child(3){
+    border-right: 1px solid #ccc;
+}
+.options select{
+    margin-left: 20px;
+    height: 30px;
+    float: left;
+}
+.classnote-list li{
+    border: 1px solid #eee;
+    background-color: #f9f9f9;
+    padding: 0 10px 0 20px;
+    margin: 10px 0;
+}
+.classnote-list li .note-title{
+    height: 30px;
+    line-height: 30px;
+}
+.classnote-list li .note-title .user{
+    float: right;
+    color: #999
+}
+.classnote-list li .answer{
+    border: 1px solid #f7efd7;
+    background-color: #faf7e5;
+    padding: 5px;
+    position: relative;
+    margin: 10px 0;
+}
+.answer .answer-content{
+    width: 90%;
+    line-height: 20px;
+    height: 20px;
+    overflow: hidden;
+}
+.answer .answer-time{
+    position: absolute;
+    right: 5px;
+    top: 10px;
+    color: #999;
+}

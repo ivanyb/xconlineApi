@@ -1,0 +1,236 @@
+/* 字体图标 */
+
+@font-face {
+    font-family: 'iconfont';
+    src: url('../fonts/demo/iconfont.eot');
+    src: url('../fonts/demo/iconfont.eot?#iefix') format('embedded-opentype'), url('iconfont.woff') format('woff'), url('../fonts/demoiconfont.ttf') format('truetype'), url('../fonts/demo/iconfont.svg#iconfont') format('svg');
+}
+
+.iconfont {
+    font-family: "iconfont" !important;
+    font-size: 16px;
+    font-style: normal;
+    -webkit-font-smoothing: antialiased;
+    -webkit-text-stroke-width: 0.2px;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+
+/* 面包屑开始 */
+
+.content .main {
+    float: left;
+    margin-left: 20px;
+    font-size: 14px;
+}
+
+.content .main .breadcrumb-box {
+    height: 48px;
+    width: 1030px;
+    line-height: 48px;
+    border-bottom: 1px solid #ddd;
+}
+
+.content .main .breadcrumb-box>div {
+    float: left;
+}
+
+.content .main .breadcrumb-box .goback {
+    float: left;
+    margin-right: 10px;
+}
+
+.content .breadcrumb-box .goback a {
+    color: #466DE2;
+}
+
+.content .main .breadcrumb li {
+    float: left;
+    padding-right: 15px;
+    position: relative;
+}
+
+.content .main .breadcrumb li::before {
+    font-family: "iconfont";
+    content: ">";
+    position: absolute;
+    right: 0;
+}
+
+.content .main .breadcrumb li.active::before {
+    display: none;
+}
+
+
+/* 面包屑结束 */
+
+.content .main .detail-box {
+    padding-top: 20px;
+    position: relative;
+}
+
+.content .detail-box .title {
+    border: 1px solid #ddd;
+    border-bottom: none;
+    float: left;
+    height: 30px;
+    line-height: 30px;
+    padding: 0 20px;
+    position: absolute;
+    top: 21px;
+    color: #466DE2;
+    background-color: #fff;
+}
+
+.content .detail-box .detail-main {
+    margin-top: 30px;
+    border: 1px solid #ddd;
+    padding-bottom: 10px;
+}
+
+.content .detail-box .detail-main .schedule {
+    height: 120px;
+    position: relative;
+}
+
+.detail-box .detail-main .schedule .progress,
+.detail-box .detail-main .schedule .line {
+    width: 500px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.detail-box .detail-main .schedule .line {
+    height: 2px;
+    background-color: #ddd;
+}
+
+.detail-box .detail-main .schedule .line>span {
+    float: left;
+    font-size: 18px;
+    margin-top: -9px;
+    margin-right: 142px;
+    color: #cccccc;
+}
+
+.detail-box .detail-main .schedule .line>span.active {
+    color: #66cc00;
+}
+
+.detail-box .schedule .line span:last-child {
+    margin-right: 0;
+}
+
+.detail-box .detail-main .schedule .progress {
+    height: 60px;
+}
+
+.detail-box .schedule .progress li {
+    height: 60px;
+    float: left;
+    position: absolute;
+    width: 140px;
+    left: -70px;
+    text-align: center;
+}
+
+.detail-box .schedule .progress li:nth-child(2) {
+    left: 97px;
+}
+
+.detail-box .schedule .progress li:nth-child(3) {
+    left: 256px;
+}
+
+.detail-box .schedule .progress li:nth-child(4) {
+    left: 418px;
+}
+
+.detail-box .schedule .progress .progress-time {
+    position: absolute;
+    bottom: 0px;
+}
+
+.detail-box .goods,
+.detail-box .member,
+.detail-box .delivery,
+.detail-box .count {
+    margin-bottom: 10px;
+}
+
+.detail-box .order .order-title,
+.detail-box .goods .goods-title,
+.detail-box .delivery .delivery-title,
+.detail-box .member .member-title,
+.detail-box .count .count-title {
+    width: 150px;
+    margin-right: 20px;
+    text-align: right;
+    height: 36px;
+    line-height: 36px;
+    float: left;
+}
+
+.detail-box .order .order-main {
+    height: 36px;
+    line-height: 36px;
+}
+
+.detail-box table {
+    width: 846px;
+    float: left;
+    border: 1px solid #ddd;
+    text-align: center;
+}
+
+.detail-box table tr {
+    height: 36px;
+}
+
+.detail-box table tr td {
+    border: 1px solid #ddd;
+}
+
+.detail-box .first-row,
+.detail-box .first-cow {
+    background-color: #f9f9f9;
+}
+
+.detail-box .first-cow {
+    text-align: right;
+    padding-right: 5px;
+    box-sizing: border-box;
+    width: 234px;
+}
+
+.detail-box .second-cow {
+    text-align: left;
+    padding-left: 5px;
+}
+
+.detail-box .btns {
+    padding: 20px 0;
+}
+
+.detail-box .btns>a {
+    float: left;
+    padding: 0 20px;
+    height: 36px;
+    line-height: 36px;
+    color: #fff;
+    margin-right: 5px;
+}
+
+.detail-box .btns .check {
+    background-color: #16a0d3;
+}
+
+.detail-box .btns .cancel {
+    background-color: #52a152;
+}
+
+.detail-box .btns .goback {
+    background-color: #ff9c30;
+}

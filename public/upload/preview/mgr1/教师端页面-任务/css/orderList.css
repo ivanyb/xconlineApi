@@ -1,0 +1,104 @@
+/* 字体图标 */
+
+@font-face {
+    font-family: 'iconfont';
+    src: url('../fonts/demo/iconfont.eot');
+    src: url('../fonts/demo/iconfont.eot?#iefix') format('embedded-opentype'), url('iconfont.woff') format('woff'), url('../fonts/demoiconfont.ttf') format('truetype'), url('../fonts/demo/iconfont.svg#iconfont') format('svg');
+}
+
+.iconfont {
+    font-family: "iconfont" !important;
+    font-size: 16px;
+    font-style: normal;
+    -webkit-font-smoothing: antialiased;
+    -webkit-text-stroke-width: 0.2px;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+
+/* 面包屑开始 */
+
+.content .main {
+    float: left;
+    margin-left: 20px;
+    font-size: 14px;
+}
+
+.content .main .breadcrumb-box {
+    height: 48px;
+    width: 1030px;
+    line-height: 48px;
+    border-bottom: 1px solid #ddd;
+}
+
+.content .main .breadcrumb-box>div {
+    float: left;
+}
+
+.content .main .breadcrumb-box .goback {
+    float: left;
+    margin-right: 10px;
+}
+
+.content .breadcrumb-box .goback a {
+    color: #466DE2;
+}
+
+.content .main .breadcrumb li {
+    float: left;
+    padding-right: 15px;
+    position: relative;
+}
+
+.content .main .breadcrumb li::before {
+    font-family: "iconfont";
+    content: ">";
+    position: absolute;
+    right: 0;
+}
+
+.content .main .breadcrumb li.active::before {
+    display: none;
+}
+
+
+/* 面包屑结束 */
+
+.content .main .list-box {
+    width: 1030px;
+}
+
+.content .main .list-box .operate {
+    padding: 20px 0 20px 0;
+}
+
+.main .list-box .operate .left-op {
+    margin-right: 10px;
+}
+
+.main .list-box .operate .left-op>a {
+    float: left;
+    height: 30px;
+    line-height: 30px;
+    box-sizing: border-box;
+    background-color: #fafafa;
+    border: 1px solid #ddd;
+    padding: 0 5px;
+}
+
+.main .list-box .search .txt {
+    width: 140px;
+    height: 30px;
+    box-sizing: border-box;
+    border: 1px solid #ddd;
+}
+
+.main .list-box .search .btn {
+    border: 1px solid #ddd;
+    background-color: #fafafa;
+    width: 30px;
+    height: 30px;
+    box-sizing: border-box;
+    line-height: 30px;
+    text-align: center;
+}

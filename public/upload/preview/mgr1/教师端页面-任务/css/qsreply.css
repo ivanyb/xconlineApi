@@ -1,0 +1,80 @@
+.right-content{
+    width: calc(100% - 250px);
+    /* background-color: #66ccff; */
+    height: 100%;
+    float: left;
+    padding: 0 20px;
+}
+.right-content .r-bread{
+    padding: 10px 0;
+    border-bottom: 1px solid #ccc;
+    color: #666;
+    margin-bottom: 50px;
+}
+.r-bread img{
+    height: 14px;
+}
+.reply-msg h3{
+    border: 1px solid #ccc;
+    padding: 10px 30px;
+    border-bottom: none;
+    position: absolute;
+    top: -34px;
+    left: -1px;
+    background-color: #fff;
+    color: #66ccff;
+}
+.reply-content{
+    position: relative;
+    border: 1px solid #ccc;
+}
+.reply-content ul{
+    margin-left: 80px;
+    margin-top: 30px;
+}
+.reply-content ul li>div{
+    float: left;
+}
+.reply-content ul li{
+    padding: 15px;
+    color: #666;
+}
+.reply-content ul li div:first-child{
+    padding-right: 20px;
+    width: 100px;
+    text-align: right;
+}
+.reply-content .reply-btn{
+    padding: 8px 10px;
+    border: 1px solid #ccc;
+    color: #000;
+}
+.reply-content .reply-btn:first-child{
+    border-right: none;
+}
+.reply-content .reply-btn:last-child{
+    border-left: none;
+}
+.reply-content .active{
+    background-color: #1e98cb;
+    color: #fff;
+}
+.reply-content textarea{
+    width: 400px;
+    height: 100px;
+}
+.push-form{
+    margin-top: 10px;
+}
+.push-form button{
+    padding: 8px 10px;
+    color: #fff;
+    border: none;
+    outline: none;
+}
+.btn-blue{
+    background-color: #1e98cb
+}
+.btn-ora{
+    background-color: #f9b781
+}

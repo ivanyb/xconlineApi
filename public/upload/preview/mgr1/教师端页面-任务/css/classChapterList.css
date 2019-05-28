@@ -1,0 +1,37 @@
+.classlist li{
+    width: 100%;
+    height: calc(100% / 4);
+    border:0;
+    border-bottom: 1px solid #f0f0f0;
+}
+.classlist li:first-child{
+    background:#fafafa;
+}
+.classcatory{
+    padding: 10px 5px;
+    
+}
+.classcatory h3{
+    color:#7e7c78;
+}
+.username span{
+    margin-right: 5px;
+    color:#c7cccd;
+}
+.username span.res{
+    color:#4a71a7;
+    cursor: pointer;
+}
+.ques{
+    padding: 10px;
+}
+.manageres{
+    padding: 20px;
+    background: #fcf9e3;
+}
+.manageres span:first-child{
+    color:#119928;
+}
+.manageres span{
+    color:#6a696c;
+}
