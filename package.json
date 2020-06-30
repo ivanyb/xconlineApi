@@ -13,7 +13,7 @@
     "charenc": "^0.0.2",
     "crypt": "^0.0.2",
     "express": "^4.14.0",
-    "express-jwt": "^5.3.0",
+    "express-jwt": "^6.0.0",
     "express-session": "^1.15.5",
     "is-buffer": "^1.1.5",
     "jsonwebtoken": "^7.4.1",
